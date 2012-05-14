@@ -21,5 +21,8 @@
     <string name="text_content_description">Upload the image of the (?) you want to sell!</string>
     <string name="snap_image_button">Snap image</string>
     <string name="from_gallery_button">Upload from Gallery</string>
+    
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 
 </resources>

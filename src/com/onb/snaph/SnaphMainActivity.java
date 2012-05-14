@@ -85,8 +85,11 @@ public class SnaphMainActivity extends Activity {
         }
         else{
         	setContentView(R.layout.main);
+<<<<<<< HEAD
+=======
         	Button snapPhoto = (Button) findViewById(R.id.snap_photo);
             snapPhoto.getBackground().setAlpha(70);
+>>>>>>> 4b647725f1f3bcba3ee4950e145b2eaae895a787
         }
         
     }
