@@ -11,10 +11,21 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
     
+    <TextView 
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+    
+    <ImageView 
+        android:id="@+id/userImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+    
 	<LinearLayout 
 	    android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-<<<<<<< HEAD
     	android:orientation="horizontal" 
     	android:layout_weight="0"
     	android:background="@color/black"
@@ -37,28 +48,5 @@
 	        />
     
 	</LinearLayout>
-    
-=======
-    	android:orientation="horizontal" >
-	    
-	    <Button
-        android:id="@+id/snap_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/snap_button" 
-        android:layout_weight="0"
-        android:onClick="onSnapButtonActivity"/>
-    
-    <Button
-        android:id="@+id/logout_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/logout_button" 
-        android:layout_weight="0"
-        android:onClick="onLogout"/>
-    
-	</LinearLayout>
-    
-
->>>>>>> 4b647725f1f3bcba3ee4950e145b2eaae895a787
+ 
 </LinearLayout>

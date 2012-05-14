@@ -1,8 +1,13 @@
 package com.onb.snaph;
 
+import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilterInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
@@ -15,6 +20,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -23,7 +29,7 @@ import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -33,6 +39,8 @@ public class SnaphMainActivity extends Activity {
 	protected static final int ACTIVITY_IMAGE_CAPTURE = 1000;
 	private static final int ACTIVITY_FROM_GALLERY = 1001;
 	TextView greetings;
+	TextView userName;
+	ImageView userImage; 
 	SnaphApplication application;
 	AsyncFacebookRunner asyncRunner;
 	SharedPreferences sharedPrefs;
@@ -43,6 +51,7 @@ public class SnaphMainActivity extends Activity {
         super.onCreate(savedInstanceState);
         application = (SnaphApplication) getApplication();
         facebook = new Facebook(application.APP_ID);
+        setContentView(R.layout.main);
 		sharedPrefs = getPreferences(MODE_PRIVATE);
         String access_token = sharedPrefs.getString("access_token", null);
         long expires = sharedPrefs.getLong("access_expires", 0);
@@ -57,10 +66,7 @@ public class SnaphMainActivity extends Activity {
 	            
 	            public void onComplete(Bundle values) {
 	            	Log.d(TAG,"Complete");
-	            	setContentView(R.layout.main);
-	            	Button snapPhoto = (Button) findViewById(R.id.snap_photo);
-	                snapPhoto.getBackground().setAlpha(70);
-	                asyncRunner = new AsyncFacebookRunner(facebook);
+	            	init();
 	            	SharedPreferences.Editor editor = sharedPrefs.edit();
                     editor.putString("access_token", facebook.getAccessToken());
                     editor.putLong("access_expires", facebook.getAccessExpires());
@@ -84,14 +90,63 @@ public class SnaphMainActivity extends Activity {
 	        });
         }
         else{
-        	setContentView(R.layout.main);
-<<<<<<< HEAD
-=======
-        	Button snapPhoto = (Button) findViewById(R.id.snap_photo);
-            snapPhoto.getBackground().setAlpha(70);
->>>>>>> 4b647725f1f3bcba3ee4950e145b2eaae895a787
+        	init();
         }
         
+    }
+    
+    public void init(){
+    	asyncRunner = new AsyncFacebookRunner(facebook);
+    	Bundle params = new Bundle();
+   		params.putString("fields", "name, picture");
+    	asyncRunner.request("me", params, new userRequestListener(application));
+    	userName = (TextView) findViewById(R.id.userName);
+    	userName.setText(application.userName);
+    	userImage = (ImageView) findViewById(R.id.userImage);
+    	userImage.setImageBitmap(getBitmap(application.userImage));
+    }
+    
+    public static Bitmap getBitmap(String url) {
+    	Bitmap bitmap = null;
+		try { 
+			
+			URL userURL = new URL(url); 
+	        URLConnection conn = userURL.openConnection(); 
+	        conn.connect(); 
+	        
+	        InputStream inputStream = conn.getInputStream(); 
+	        BufferedInputStream bufferedStream = new BufferedInputStream(inputStream); 
+	        bitmap = BitmapFactory.decodeStream(new FlushedInputStream(inputStream));
+	        bufferedStream.close(); 
+	        inputStream.close();
+	     } catch (Exception e) {
+	    	Log.d(TAG,e.getMessage());
+	     } 
+	     return bitmap;
+	}
+    
+    static class FlushedInputStream extends FilterInputStream {
+        public FlushedInputStream(InputStream inputStream) {
+            super(inputStream);
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            long totalBytesSkipped = 0L;
+            while (totalBytesSkipped < n) {
+                long bytesSkipped = in.skip(n - totalBytesSkipped);
+                if (bytesSkipped == 0L) {
+                      int b = read();
+                      if (b < 0) {
+                          break;
+                      } else {
+                          bytesSkipped = 1;
+                      }
+               }
+                totalBytesSkipped += bytesSkipped;
+            }
+            return totalBytesSkipped;
+        }
     }
     
     public void onLogout(View view){
