@@ -12,7 +12,8 @@ public class SnaphApplication extends Application{
 	private Bitmap image;
 	Facebook facebook;
 	String userName = "";
-	String userImage = "";
+	String userId = "";
+	Bitmap userImage;
 	SharedPreferences sharedPrefs;
 	AsyncFacebookRunner asyncRunner;
 	final String APP_ID = "366360670078534";

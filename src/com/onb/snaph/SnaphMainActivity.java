@@ -1,13 +1,17 @@
 package com.onb.snaph;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
@@ -23,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 import android.util.Log;
@@ -40,7 +45,8 @@ public class SnaphMainActivity extends Activity {
 	private static final int ACTIVITY_FROM_GALLERY = 1001;
 	TextView greetings;
 	TextView userName;
-	ImageView userImage; 
+	ImageView userImage;
+	Handler userHandler;
 	SnaphApplication application;
 	AsyncFacebookRunner asyncRunner;
 	SharedPreferences sharedPrefs;
@@ -52,101 +58,87 @@ public class SnaphMainActivity extends Activity {
         application = (SnaphApplication) getApplication();
         facebook = new Facebook(application.APP_ID);
         setContentView(R.layout.main);
-		sharedPrefs = getPreferences(MODE_PRIVATE);
-        String access_token = sharedPrefs.getString("access_token", null);
-        long expires = sharedPrefs.getLong("access_expires", 0);
-        if(access_token != null) {
-            facebook.setAccessToken(access_token);
-        }
-        if(expires != 0) {
-            facebook.setAccessExpires(expires);
-        }
-        if(!facebook.isSessionValid()) {
-			facebook.authorize(this, new DialogListener() {
-	            
-	            public void onComplete(Bundle values) {
-	            	Log.d(TAG,"Complete");
-	            	init();
-	            	SharedPreferences.Editor editor = sharedPrefs.edit();
-                    editor.putString("access_token", facebook.getAccessToken());
-                    editor.putLong("access_expires", facebook.getAccessExpires());
-                    editor.commit();
-	            }
-	            
-	            public void onFacebookError(FacebookError error) {
-	            	Log.d(TAG,"FBError");
-	            	finish();
-	            }
-	
-	            public void onError(DialogError e) {
-	            	Log.d(TAG,"Error");
-	            	finish();
-	            }
-	            
-	            public void onCancel() {
-	            	Log.d(TAG,"Cancel");
-	            	finish();
-	            }
-	        });
-        }
-        else{
-        	init();
-        }
-        
+        userHandler = new Handler();
+		facebook.authorize(this, new DialogListener() {
+            
+            public void onComplete(Bundle values) {
+            	Log.d(TAG,"Complete");
+            	init();
+            }
+            
+            public void onFacebookError(FacebookError error) {
+            	Log.d(TAG,"FBError");
+            	finish();
+            }
+
+            public void onError(DialogError e) {
+            	Log.d(TAG,"Error");
+            	finish();
+            }
+            
+            public void onCancel() {
+            	Log.d(TAG,"Cancel");
+            	finish();
+            } 
+		});
     }
     
     public void init(){
     	asyncRunner = new AsyncFacebookRunner(facebook);
     	Bundle params = new Bundle();
-   		params.putString("fields", "name, picture");
-    	asyncRunner.request("me", params, new userRequestListener(application));
-    	userName = (TextView) findViewById(R.id.userName);
-    	userName.setText(application.userName);
+   		params.putString("fields", "id, name, picture");
+   		userName = (TextView) findViewById(R.id.userName);
     	userImage = (ImageView) findViewById(R.id.userImage);
-    	userImage.setImageBitmap(getBitmap(application.userImage));
+    	asyncRunner.request("me", params, new userRequestListener());
+    	Log.d(TAG,"OUT");
     }
     
-    public static Bitmap getBitmap(String url) {
-    	Bitmap bitmap = null;
-		try { 
-			
-			URL userURL = new URL(url); 
-	        URLConnection conn = userURL.openConnection(); 
-	        conn.connect(); 
-	        
-	        InputStream inputStream = conn.getInputStream(); 
-	        BufferedInputStream bufferedStream = new BufferedInputStream(inputStream); 
-	        bitmap = BitmapFactory.decodeStream(new FlushedInputStream(inputStream));
-	        bufferedStream.close(); 
-	        inputStream.close();
-	     } catch (Exception e) {
-	    	Log.d(TAG,e.getMessage());
-	     } 
-	     return bitmap;
-	}
-    
-    static class FlushedInputStream extends FilterInputStream {
-        public FlushedInputStream(InputStream inputStream) {
-            super(inputStream);
-        }
+    class userRequestListener implements RequestListener {
 
-        @Override
-        public long skip(long n) throws IOException {
-            long totalBytesSkipped = 0L;
-            while (totalBytesSkipped < n) {
-                long bytesSkipped = in.skip(n - totalBytesSkipped);
-                if (bytesSkipped == 0L) {
-                      int b = read();
-                      if (b < 0) {
-                          break;
-                      } else {
-                          bytesSkipped = 1;
-                      }
-               }
-                totalBytesSkipped += bytesSkipped;
-            }
-            return totalBytesSkipped;
-        }
+    	final String RLTAG = userRequestListener.class.getSimpleName();
+    	
+    	public void onComplete(String response, Object state) {
+    		JSONObject jsonObject;
+    		try {
+    			jsonObject = new JSONObject(response);
+            	URL newurl = new URL(jsonObject.getString("picture")); 
+            	Bitmap img = BitmapFactory.decodeStream(newurl.openConnection().getInputStream());
+            	application.userImage = img;
+            	application.userName = jsonObject.getString("name");
+            	application.userId = jsonObject.getString("id");
+            	Log.d(TAG,application.userId);
+    		} catch (JSONException e) {
+    			e.printStackTrace();
+    		} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    		
+    		userHandler.post(new Runnable() {
+                public void run() {
+                	userName.setText(application.userName);
+                	userImage.setImageBitmap(application.userImage);
+                }
+            });
+    	}
+
+    	public void onIOException(IOException e, Object state) {
+    		Log.d(TAG,e.getMessage());
+    	}
+
+    	public void onFileNotFoundException(FileNotFoundException e, Object state) {
+    		Log.d(TAG,e.getMessage());
+    	}
+
+    	public void onMalformedURLException(MalformedURLException e, Object state) {
+    		Log.d(TAG,e.getMessage());
+    	}
+
+    	public void onFacebookError(FacebookError e, Object state) {
+    		Log.d(TAG,e.getMessage());
+    	}
+    	
     }
     
     public void onLogout(View view){
@@ -154,10 +146,6 @@ public class SnaphMainActivity extends Activity {
 
     		  public void onComplete(String response, Object state) {
     			  Log.d(TAG,facebook.getAccessToken()+"");
-    			  SharedPreferences.Editor editor = sharedPrefs.edit();
-                  editor.putString("access_token", facebook.getAccessToken());
-                  editor.putLong("access_expires", facebook.getAccessExpires());
-                  editor.commit();
                   finish();
     		  }
     		  
