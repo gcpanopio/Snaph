@@ -90,16 +90,17 @@ public class SnaphMainActivity extends Activity {
 	        });
         }
         else{
+        	Log.d(TAG, "INITIALIZE");
         	init();
         }
         
     }
     
-    public void init(){
+    private void init(){
     	asyncRunner = new AsyncFacebookRunner(facebook);
     	Bundle params = new Bundle();
    		params.putString("fields", "name, picture");
-    	asyncRunner.request("me", params, new userRequestListener(application));
+    	asyncRunner.request("me", params, new UserRequestListener(application));
     	userName = (TextView) findViewById(R.id.userName);
     	userName.setText(application.userName);
     	userImage = (ImageView) findViewById(R.id.userImage);
