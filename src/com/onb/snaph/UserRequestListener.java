@@ -12,11 +12,11 @@ import android.util.Log;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.FacebookError;
 
-public class userRequestListener implements RequestListener {
+public class UserRequestListener implements RequestListener {
 
 	protected static final String TAG = SnaphMainActivity.class.getSimpleName();
 	SnaphApplication app;
-	public userRequestListener(SnaphApplication app){
+	public UserRequestListener(SnaphApplication app){
 		this.app = app;
 	}
 	public void onComplete(String response, Object state) {
@@ -25,9 +25,7 @@ public class userRequestListener implements RequestListener {
 			jsonObject = new JSONObject(response);
 		
         	app.userImage = jsonObject.getString("picture");
-        	Log.d(TAG,app.userImage);
         	app.userName = jsonObject.getString("name");
-        	Log.d(TAG,app.userName);
 		} catch (JSONException e) {
 			Log.d(TAG,e.getMessage());
 		}

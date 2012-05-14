@@ -17,6 +17,7 @@ public class SnaphApplication extends Application{
 	SharedPreferences sharedPrefs;
 	AsyncFacebookRunner asyncRunner;
 	final String APP_ID = "366360670078534";
+	
 	@Override
 	public void onCreate() {
         super.onCreate();

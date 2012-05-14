@@ -1,12 +1,8 @@
 package com.onb.snaph;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -83,7 +79,7 @@ public class SnaphMainActivity extends Activity {
 		});
     }
     
-    public void init(){
+    private void init(){
     	asyncRunner = new AsyncFacebookRunner(facebook);
     	Bundle params = new Bundle();
    		params.putString("fields", "id, name, picture");
