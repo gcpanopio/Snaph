@@ -81,6 +81,7 @@ public class SnaphMainActivity extends Activity {
     
     private void init(){
     	asyncRunner = new AsyncFacebookRunner(facebook);
+    	application.token = facebook.getAccessToken();
     	Bundle params = new Bundle();
    		params.putString("fields", "id, name, picture");
    		userName = (TextView) findViewById(R.id.userName);

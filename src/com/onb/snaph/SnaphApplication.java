@@ -1,7 +1,6 @@
 package com.onb.snaph;
 
 import com.facebook.android.AsyncFacebookRunner;
-import com.facebook.android.Facebook;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -10,9 +9,9 @@ import android.graphics.Bitmap;
 public class SnaphApplication extends Application{
 
 	private Bitmap image;
-	Facebook facebook;
 	String userName = "";
 	String userId = "";
+	String token="";
 	Bitmap userImage;
 	SharedPreferences sharedPrefs;
 	AsyncFacebookRunner asyncRunner;

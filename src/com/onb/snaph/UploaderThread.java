@@ -24,22 +24,25 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 public class UploaderThread extends Thread {
-	Context context;
-	Listing listing;
-	String token;
+	private Context context;
+	private Listing listing;
+	private String token;
+	private String userId;
 	
-	final String address = "http://10.10.5.122:8080/Snaph/upload";
+	final String address = "http://10.10.5.51:8080/Snaph/upload";
 	
 	private Handler handler;
 	
-	public UploaderThread(Context context, Listing listing, String token) {
+	public UploaderThread(Context context, Listing listing, Pair<String, String> userInfo) {
 		super();
 		this.context = context;
 		this.listing = listing;
-		this.token = token;
+		this.token = userInfo.second;
+		this.userId = userInfo.first;
 		
 		handler = new Handler();
 	}
@@ -97,8 +100,9 @@ public class UploaderThread extends Thread {
 		entity.addPart("description", new StringBody(listing.getDescription()));
 		entity.addPart("price", new StringBody(listing.getPrice().toString()));
 		entity.addPart("image", bitmapToByteArrayBody(listing.getImage()));
-	
+		entity.addPart("userId", new StringBody(userId));
 		entity.addPart("token", new StringBody(token));
+		
 		return entity;
 	}
 	

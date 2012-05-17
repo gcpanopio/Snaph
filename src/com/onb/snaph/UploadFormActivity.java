@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,7 +48,8 @@ public class UploadFormActivity extends Activity{
     public void onUpload(View view){
     	Listing list = new Listing(title.getText().toString(), description.getText().toString(), new BigDecimal(price.getText().toString()), snaph.getImage());
     	
-    	Thread thread = new UploaderThread(this.getBaseContext(), list, "100003804984482");
+    	Pair<String, String> userInfo = new Pair<String, String>(snaph.userId, snaph.token);
+    	Thread thread = new UploaderThread(this.getBaseContext(), list, userInfo);
     	thread.start();
     	
     	finish();
