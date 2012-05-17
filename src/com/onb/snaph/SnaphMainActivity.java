@@ -17,6 +17,9 @@ import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -27,12 +30,15 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SnaphMainActivity extends Activity {
     
@@ -87,6 +93,11 @@ public class SnaphMainActivity extends Activity {
    		userName = (TextView) findViewById(R.id.userName);
     	userImage = (ImageView) findViewById(R.id.userImage);
     	asyncRunner.request("me", params, new userRequestListener());
+    	
+    	Button snapPhoto = (Button) findViewById(R.id.snap_photo);
+    	snapPhoto.getBackground().setAlpha(70);
+    	Button logout = (Button) findViewById(R.id.logout_button);
+    	logout.getBackground().setAlpha(70);
     	Log.d(TAG,"OUT");
     }
     
@@ -166,29 +177,24 @@ public class SnaphMainActivity extends Activity {
     		});
     }
     
-    public void onSnapButtonActivity(View view){
-    	 PopupMenu popup = new PopupMenu(this, view);
-    	 MenuInflater inflater = popup.getMenuInflater();
-    	 inflater.inflate(R.menu.photo_menu, popup.getMenu());
-    	 popup.show();
-    	 
-    	 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-			
-    		 public boolean onMenuItemClick(MenuItem item) {
-    		     switch (item.getItemId()) {
-    		         case R.id.snap_image:
-    		        	 Log.d(TAG, "SNAP IMAGE");
-    		        	 snapImage();
-    		             return true;
-    		         case R.id.from_gallery:
-    		        	 Log.d(TAG, "FROM GALLERY");
-    		        	 fromGallery();
-    		             return true;
-    		         default:
-    		             return false;
-    		     }
-    		 }
-		});
+    public void onSnapButtonActivity(View view){    	
+    	final CharSequence[] items = {"Snap Image", "Upload from Gallery"};
+
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setTitle("Snap a Photo!");
+    	builder.setItems(items, new DialogInterface.OnClickListener() {
+    	    public void onClick(DialogInterface dialog, int item) {
+    	       Log.d(TAG, "Item clicked: "+item);
+    	       if (item == 0){
+    	    	   snapImage();
+    	       }
+    	       else if (item == 1){
+    	    	   fromGallery();
+    	       }
+    	    }
+    	});
+    	AlertDialog alert = builder.create();
+    	alert.show();
     }
     
     private void snapImage(){

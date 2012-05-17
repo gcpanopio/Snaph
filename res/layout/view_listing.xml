@@ -8,13 +8,14 @@
          android:layout_width="fill_parent"
     	 android:layout_height="wrap_content"
    		 android:layout_weight="1">
+   		 
 	    <LinearLayout
 	         android:layout_width="fill_parent"
 	    	 android:layout_height="wrap_content"
 	    	 android:orientation="vertical">
 	    	 
 		    <ImageView
-		        android:id="@+id/image"
+		        android:id="@+id/image_view"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_gravity="center_horizontal"
@@ -29,34 +30,30 @@
 		        android:layout_height="wrap_content"
 		        android:text="@string/form_title" />
 		     
-		     <EditText 
-		         android:id="@+id/title"
+		     <TextView
+		         android:id="@+id/title_view"
 		         android:layout_width="fill_parent"
-		         android:layout_height="wrap_content"
-		         android:inputType="text"/>
+		         android:layout_height="wrap_content"/>
 		     
-		      <TextView
+		     <TextView
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:text="@string/form_price" />
 		     
-		     <EditText 
-		         android:id="@+id/price"
+		     <TextView 
+		         android:id="@+id/price_view"
 		         android:layout_width="fill_parent"
-		         android:layout_height="wrap_content"
-		         android:inputType="numberDecimal"/>
+		         android:layout_height="wrap_content"/>
 		     
-		      <TextView
+		     <TextView
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:text="@string/form_description" />
 		     
-		     <EditText 
-		         android:id="@+id/description"
+		     <TextView 
+		         android:id="@+id/description_view"
 		         android:layout_width="fill_parent"
-		         android:layout_height="wrap_content"
-		         android:inputType="textMultiLine"
-		         android:gravity="top"/>
+		         android:layout_height="wrap_content"/>
 		  </LinearLayout>
 	  </ScrollView>
     
@@ -65,21 +62,28 @@
           android:layout_height="wrap_content"
           android:background="@color/black"
           android:orientation="horizontal"
-          android:paddingTop="5dp" >
+          android:paddingTop="5dp">
          
 	    <Button
-	        android:id="@+id/upload_photo"
-	        android:layout_width="159dp"
+	        android:id="@+id/edit_button"
+	        android:layout_width="106dp"
 	        android:layout_height="wrap_content"
-	        android:text="@string/upload_button" 
-	        android:onClick="onUpload"/>
+	        android:text="@string/edit_button" 
+	        android:onClick="onEdit"/>
+	    
+	      <Button
+	        android:id="@+id/delete_button"
+	        android:layout_width="106dp"
+	        android:layout_height="wrap_content"
+	        android:text="@string/delete_button" 
+	        android:onClick="onDelete"/>
       
          <Button 
-             android:id="@+id/cancel_upload"
-             android:text="@string/cancel_button"
-             android:layout_width="160dp"
+             android:id="@+id/back_button"
+             android:text="@string/back_button"
+             android:layout_width="106dp"
              android:layout_height="wrap_content"
-             android:onClick="onCancel"/>
+             android:onClick="onBack"/>
          
        </LinearLayout>
     

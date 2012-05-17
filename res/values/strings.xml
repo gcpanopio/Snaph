@@ -17,6 +17,9 @@
     <string name="upload_form">Upload Form</string>
     <string name="upload_button">Upload</string>
     <string name="cancel_button">Cancel</string>
+    <string name="edit_button">Edit</string>
+    <string name="delete_button">Delete</string>
+    <string name="back_button">Back</string>
     
     <string name="text_content_description">Upload the image of the (?) you want to sell!</string>
     <string name="snap_image_button">Snap image</string>

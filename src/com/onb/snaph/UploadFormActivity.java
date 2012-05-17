@@ -19,6 +19,7 @@ public class UploadFormActivity extends Activity{
 	private EditText description;
 	private EditText price;
 	private SnaphApplication snaph;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	
