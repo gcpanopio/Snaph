@@ -21,7 +21,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -40,7 +39,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class SnaphMainActivity extends Activity {
     
@@ -48,15 +46,15 @@ public class SnaphMainActivity extends Activity {
 	protected static final int ACTIVITY_IMAGE_CAPTURE = 1000;
 	private static final int ACTIVITY_FROM_GALLERY = 1001;
 	private ArrayAdapter<CompressedListing> adapter;
-	
-	TextView greetings;
-	TextView userName;
-	ImageView userImage;
-	Handler userHandler;
-	SnaphApplication snaph;
-	AsyncFacebookRunner asyncRunner;
-	SharedPreferences sharedPrefs;
-	Facebook facebook; 
+
+	private TextView userName;
+	private ImageView userImage;
+	private Handler userHandler;
+	private SnaphApplication snaph;
+	private AsyncFacebookRunner asyncRunner;
+	//private SharedPreferences sharedPrefs;
+	private Facebook facebook; 
+	private ListView itemList;
 	 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,31 +101,22 @@ public class SnaphMainActivity extends Activity {
     	snapPhoto.getBackground().setAlpha(70);
     	Button logout = (Button) findViewById(R.id.logout_button);
     	logout.getBackground().setAlpha(70);
-    	
-    	
+    
     	setListView();
     }
     
     private void setListView(){
     	adapter = createListingAdapter(getApplicationContext(), 0);
     	snaph.setAdapter(adapter);
-    	ListView itemList = (ListView) findViewById(R.id.item_list);
+    	
+    	itemList = (ListView) findViewById(R.id.item_list);
 
-       // itemList.setAdapter(adapter);
-         
-        Log.d(TAG, "Token: "+snaph.fbToken);
-        Log.d(TAG, "UserId: "+snaph.fbUserId);
-        
-        while(snaph.fbUserId.equals("")){
-        	
-        }
-        
         Thread thread = new RetrieverThread(getApplicationContext(), snaph.fbUserId, snaph.getAdapter());
         thread.start();
         try {
 			thread.join();
 			itemList.setAdapter(snaph.getAdapter());
-			adapter.notifyDataSetChanged();
+			snaph.notifyAdapterChange();
 		} catch (InterruptedException e) {
 			Log.d("Thread join error", e.getMessage());
 			e.printStackTrace();
@@ -136,7 +125,8 @@ public class SnaphMainActivity extends Activity {
         itemList.setOnItemClickListener(new ListView.OnItemClickListener() {
               public void onItemClick(AdapterView<?> a, View v, int i, long l) {
                   try {
-                	//	showToast();
+                	  Log.d(TAG, "item clicked on position "+i);
+                	  viewListing(i);
                   }
                   catch(Exception e) {
                       
@@ -147,6 +137,18 @@ public class SnaphMainActivity extends Activity {
     	Log.d(TAG,"OUT");
     }
     
+    public void onResume(){
+    	super.onResume();
+    	setListView();
+    }
+    private void viewListing(int position){
+    	Log.d(TAG, "view Listing");
+    	Intent viewForm = new Intent(this, ViewListingActivity.class);
+    	viewForm.putExtra("item_position", position);
+    	Log.d(TAG, "intent + extra done");
+  	  	startActivity(viewForm);
+    }
+
     class userRequestListener implements RequestListener {
 
     	final String RLTAG = userRequestListener.class.getSimpleName();

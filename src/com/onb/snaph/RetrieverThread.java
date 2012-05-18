@@ -45,7 +45,7 @@ public class RetrieverThread extends Thread {
 	@Override
 	public void run() {
 
-		showToast("Retrieving from web");
+		showToast("Retrieving your items");
 		JSONArray jsonArray;
 		try {
 			jsonArray = getListFromWebApp();			

@@ -1,6 +1,7 @@
 package com.onb.snaph;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,13 +31,22 @@ public class ViewListingActivity extends Activity{
         Button back = (Button) findViewById(R.id.back_button);
         back.getBackground().setAlpha(70);
         
-      /*  snaph = (SnaphApplication) getApplication();
+        snaph = (SnaphApplication) getApplication();
+        
+        Intent viewForm = this.getIntent();
+        int position = viewForm.getIntExtra("item_position", -1);
+        
+        Listing item = snaph.getAdapter().getItem(position).toListing();
+      
         
         image = (ImageView) findViewById(R.id.image_view);
-        image.setImageBitmap(snaph.getImage());
+        image.setImageBitmap(item.getImage());
         title = (EditText) findViewById(R.id.title_view);
+        title.setText(item.getName());
         description = (EditText) findViewById(R.id.description_view);
-        price = (EditText) findViewById(R.id.price_view);*/
+        description.setText(item.getDescription());
+        price = (EditText) findViewById(R.id.price_view);
+        price.setText(item.getPrice().toString());
     }
 	
 	public void onDelete(){

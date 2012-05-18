@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -54,16 +53,14 @@ public class UploadFormActivity extends Activity{
     	SellerInfo seller = new SellerInfo(fbUser, null, AndroidUserCommand.INSERT);
     	Thread thread = new UploaderThread(this.getBaseContext(), list, seller);
     	thread.start();
-    	/*try {
+    	try {
 			thread.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	snaph.getAdapter().clear();
-    	Thread thread2 = new RetrieverThread(getApplicationContext(), snaph.fbUserId, snaph.getAdapter());
-    	thread2.start();
-    	snaph.notifyAdapterChange();*/
+    	
+    	
     	finish();
     }
 }
