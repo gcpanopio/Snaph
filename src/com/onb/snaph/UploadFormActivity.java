@@ -54,7 +54,7 @@ public class UploadFormActivity extends Activity{
     	SellerInfo seller = new SellerInfo(fbUser, null, AndroidUserCommand.INSERT);
     	Thread thread = new UploaderThread(this.getBaseContext(), list, seller);
     	thread.start();
-    	try {
+    	/*try {
 			thread.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -63,7 +63,7 @@ public class UploadFormActivity extends Activity{
     	snaph.getAdapter().clear();
     	Thread thread2 = new RetrieverThread(getApplicationContext(), snaph.fbUserId, snaph.getAdapter());
     	thread2.start();
-    	snaph.notifyAdapterChange();
+    	snaph.notifyAdapterChange();*/
     	finish();
     }
 }

@@ -107,7 +107,7 @@ public class RetrieverThread extends Thread {
 	}
 	private void parseListAndInsertToAdapter(JSONArray jsonArray) throws JSONException {
 		
-		//adapter.clear();
+		adapter.clear();
 		
 		//lets declare variables outside the loop so we can reuse them every iteration
 		JSONObject item;
@@ -147,39 +147,5 @@ public class RetrieverThread extends Thread {
 			}		
 		};
 		handler.post(toast);
-	}
-	
-	
-	/**
-	 * test methods. remove after test
-	 */
-	
-	private JSONArray makeJSONArraySample() throws JSONException {
-		String result = makeJSONString();
-		
-		JSONObject obj = new JSONObject(result);
-		
-		return obj.getJSONArray("items");
-	}
-	
-	private String makeJSONString () {
-    	StringBuilder str = new StringBuilder("{ \"items\": [");
-    	str.append(makeJSONStringWithValues("house", "new", "good", "html.com")).append(", ");
-    	str.append(makeJSONStringWithValues("car", "2-wheeled", "$10.00", "car.com")).append(", ");
-    	str.append(makeJSONStringWithValues("lot", "100 sqr meters", "P1M", "lot_lot.com"));
-    	str.append("]}");
-    	
-    	return str.toString();
-    }
-    
-    private String makeJSONStringWithValues(String name, String description, String price, String uri) {
-    	StringBuilder jsonListing = new StringBuilder("{");
-    	jsonListing.append("\"name\": \"").append(name).append("\", ");
-       	jsonListing.append("\"description\": \"").append(description).append("\", ");
-       	jsonListing.append("\"price\": \"").append(price).append("\", ");
-       	jsonListing.append("\"uri\": \"").append(uri).append("\" ");
-    	jsonListing.append("}");
-    	return jsonListing.toString();
-    }
-	
+	}	
 }
