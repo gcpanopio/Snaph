@@ -1,0 +1,185 @@
+package com.onb.snaph;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
+import android.os.Handler;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
+
+public class RetrieverThread extends Thread {
+
+	private String address = "http://10.10.5.51:8080/Snaph/retrieve";
+	
+	private String fbUserId;
+	private ArrayAdapter<CompressedListing> adapter;
+	
+	// these are for the toast
+	private Context context;
+	private Handler handler;
+	public RetrieverThread(Context context, String fbUserId, ArrayAdapter<CompressedListing> adapter) {
+		super();
+		this.fbUserId = fbUserId;
+		this.adapter = adapter;
+		
+		this.context = context;
+		handler = new Handler();
+	}
+
+	@Override
+	public void run() {
+
+		showToast("Retrieving from web");
+		JSONArray jsonArray;
+		try {
+			jsonArray = getListFromWebApp();			
+			parseListAndInsertToAdapter(jsonArray);
+			if (adapter.isEmpty()) {
+				showToast("No items found");
+			} else {
+				showToast(adapter.getCount()+" item(s) retrieved");	
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+			showToast("Bad web data");
+		} catch (IOException e) {
+			showToast("Failed to connect");
+			e.printStackTrace();
+		} catch (Exception e) {
+			showToast("Error occured");
+			Log.d("other exceptions", e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	private JSONArray getListFromWebApp() throws IOException, JSONException, Exception {
+		HttpPost httppost = new HttpPost(address);
+		
+		httppost.setEntity(makeEntityRequest(fbUserId));
+		String jsonString = executeHttpRequest(httppost);
+		if (jsonString.equals("error")) {
+			Log.d("WebApp posted this error", jsonString);
+			throw new Exception("Web posted an error");
+		}
+		Log.d("raw json string", jsonString);
+		JSONArray array = extractJsonArrayFrom(jsonString);
+				
+		return array;
+	}
+	
+	private String executeHttpRequest(HttpPost httppost) throws ClientProtocolException, IOException {
+		
+		HttpClient httpclient = new DefaultHttpClient();
+		
+		HttpResponse response = httpclient.execute(httppost);
+		HttpEntity entity = response.getEntity();		
+		String stringResponse = EntityUtils.toString(entity);
+		entity.consumeContent();
+		
+		httpclient.getConnectionManager().shutdown();
+		
+		return stringResponse;
+	}
+
+	private MultipartEntity makeEntityRequest(String userId) throws UnsupportedEncodingException {
+
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		entity.addPart("facebookUserId", new StringBody(userId));
+		
+		return entity;
+	}
+	private void parseListAndInsertToAdapter(JSONArray jsonArray) throws JSONException {
+		
+		//adapter.clear();
+		
+		//lets declare variables outside the loop so we can reuse them every iteration
+		JSONObject item;
+		CompressedListing listing;
+		
+		for (int i=0; i<jsonArray.length(); i++) {
+			item = jsonArray.getJSONObject(i);
+			listing = parseJSONObject(item);
+			adapter.add(listing);
+			Log.d("parsed Listing", listing.toString());
+		}
+	}
+	
+	// parses one instance of Listing from the json array
+	private CompressedListing parseJSONObject(JSONObject obj) throws JSONException {
+		String name = obj.getString("name");
+		String description = obj.getString("description");
+		String price = obj.getString("price");
+		String imageUri = obj.getString("image");
+		int itemId = obj.getInt("itemId");
+		String itemUrl = obj.getString("itemUrl");
+		
+		return new CompressedListing(itemId, name, description, price, imageUri, itemUrl);
+	}
+	
+	private JSONArray extractJsonArrayFrom(String jsonString) throws JSONException {
+		JSONObject obj = new JSONObject(jsonString);
+		JSONArray array = obj.getJSONArray("items");
+		return array;
+	}
+	
+	private void showToast(final String message) {
+		Runnable toast = new Runnable() {
+			@Override
+			public void run () {
+				Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+			}		
+		};
+		handler.post(toast);
+	}
+	
+	
+	/**
+	 * test methods. remove after test
+	 */
+	
+	private JSONArray makeJSONArraySample() throws JSONException {
+		String result = makeJSONString();
+		
+		JSONObject obj = new JSONObject(result);
+		
+		return obj.getJSONArray("items");
+	}
+	
+	private String makeJSONString () {
+    	StringBuilder str = new StringBuilder("{ \"items\": [");
+    	str.append(makeJSONStringWithValues("house", "new", "good", "html.com")).append(", ");
+    	str.append(makeJSONStringWithValues("car", "2-wheeled", "$10.00", "car.com")).append(", ");
+    	str.append(makeJSONStringWithValues("lot", "100 sqr meters", "P1M", "lot_lot.com"));
+    	str.append("]}");
+    	
+    	return str.toString();
+    }
+    
+    private String makeJSONStringWithValues(String name, String description, String price, String uri) {
+    	StringBuilder jsonListing = new StringBuilder("{");
+    	jsonListing.append("\"name\": \"").append(name).append("\", ");
+       	jsonListing.append("\"description\": \"").append(description).append("\", ");
+       	jsonListing.append("\"price\": \"").append(price).append("\", ");
+       	jsonListing.append("\"uri\": \"").append(uri).append("\" ");
+    	jsonListing.append("}");
+    	return jsonListing.toString();
+    }
+	
+}

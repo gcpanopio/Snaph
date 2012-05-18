@@ -6,8 +6,12 @@ import android.graphics.Bitmap;
 
 /**
  * 
- * The primary purpose of this class is to serve as a wrapper to the input data to be sent to the web application.
- * This is the reason why there are no setter methods
+ * The primary purpose of this class is to serve as a wrapper of mutable data.
+ * 
+ * Creating several instances of Listing is impractical.
+ * It shall only be used to hold the values of the active item (i.e, the one being created, modified, or deleted)
+ * 
+ * The fields of Listing are the ones being sent to the web appl.
  * 
  * @author ken
  *
@@ -19,14 +23,22 @@ public class Listing {
 	private BigDecimal price;
 	private Bitmap image;
 	
-	public Listing(String name, String description, BigDecimal price, Bitmap image) {
-		super();
+	//this is the database id from web app. A new Listing in android app has no itemId
+	private int itemId;
+	
+	public Listing(String name, String description, BigDecimal price, Bitmap image, int itemId) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.image = image;
+		
+		this.itemId = itemId;
 	}
-
+	
+	public Listing(String name, String description, BigDecimal price, Bitmap image) {
+		this(name, description, price, image, -1);
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -46,6 +58,10 @@ public class Listing {
 	public BigDecimal getPrice() {
 		return price;
 	}
+	
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
 
 	public Bitmap getImage() {
 		return image;
@@ -54,17 +70,34 @@ public class Listing {
 	public void setImage(Bitmap image) {
 		this.image = image;
 	}
+	
+	public int getItemId() {
+		return itemId;
+	}
+	
+	public String getItemIdAsString() {
+		return Integer.toString(getItemId());
+	}
+	
+	public void setItemId(int itemId){
+		this.itemId = itemId;
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((image == null) ? 0 : image.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((price == null) ? 0 : price.hashCode());
 		return result;
+	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder("(");
+		result.append(getItemId()).append(",");
+		result.append(getName()).append(",").append(getDescription()).append(",");
+		result.append(getPrice()).append(")");
+		
+		return result.toString();
 	}
 
 	@Override
@@ -76,16 +109,6 @@ public class Listing {
 		if (!(obj instanceof Listing))
 			return false;
 		Listing other = (Listing) obj;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (image == null) {
-			if (other.image != null)
-				return false;
-		} else if (!image.equals(other.image))
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -98,9 +121,4 @@ public class Listing {
 			return false;
 		return true;
 	}
-
-	public void setPrice(BigDecimal price) {
-		this.price = price;
-	}
-
 }

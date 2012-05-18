@@ -5,12 +5,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -24,105 +25,134 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Handler;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.Toast;
 
 public class UploaderThread extends Thread {
 	private Context context;
 	private Listing listing;
-	private String token;
-	private String userId;
+	private SellerInfo sellerInfo;
 	
-	final String address = "http://10.10.5.51:8080/Snaph/upload";
+	private String address = "http://10.10.5.51:8080/Snaph/upload";
 	
 	private Handler handler;
 	
-	public UploaderThread(Context context, Listing listing, Pair<String, String> userInfo) {
-		super();
+	public UploaderThread(Context context, Listing listing, SellerInfo sellerInfo) {
 		this.context = context;
 		this.listing = listing;
-		this.token = userInfo.second;
-		this.userId = userInfo.first;
+		this.sellerInfo = sellerInfo;
 		
 		handler = new Handler();
 	}
 	
 	@Override
-	public void run () {
-	
-		
+	public void run () {	
 		try {
-			handler.post(makeToast("Sending data"));
+			showToast("Sending data");
 			HttpResponse response = sendToNetwork();
-			try {
-				receiveResponse(response);
-				handler.post(makeToast("Data sent"));
-			} catch (IOException e) {
-				e.printStackTrace();
-				Log.d("DataSenderThread error", e.getMessage());
-				handler.post(makeToast("Error in response"));
-			}
-			
+			String message = decodeResponse(response);
+			showToast(message);
+		} catch (HttpHostConnectException e) {
+			showToast("Failed to connect");
+			Log.d("DataSenderThread Connection Exception", e.getMessage());
 		} catch (IOException e) {
+			showToast("Failed to send data");
+			Log.d("DataSenderThread exception", e.getMessage());
 			e.printStackTrace();
-			Log.d("DataSenderThread error", e.getMessage());
-			handler.post(makeToast("Failed to send data"));
 		}		
 	}
 	
 	private HttpResponse sendToNetwork() throws ClientProtocolException, IOException {
+		
 		HttpClient httpclient = new DefaultHttpClient();
 		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 		HttpPost httppost = new HttpPost(address);
-		
-		httppost.setEntity(listingToMultipartEntity(listing));
-		
-		HttpResponse response = httpclient.execute(httppost);
-		
-		httpclient.getConnectionManager().shutdown();	
-		
+		httppost.setEntity(createMultipartEntity());
+
+		HttpResponse response = httpclient.execute(httppost);											
+		httpclient.getConnectionManager().shutdown();			
 		return response;
 	}
 	
-	private void receiveResponse(HttpResponse response) throws IOException {
-		HttpEntity resEntity = response.getEntity();
-		System.out.println(response.getStatusLine());
-		if (resEntity != null) {
-		     System.out.println(EntityUtils.toString(resEntity));
-		     resEntity.consumeContent();
+	private String decodeResponse(HttpResponse response) throws ParseException, IOException {
+		String  strResponse = EntityUtils.toString(response.getEntity());
+		Log.d("Upload: Server says", strResponse);
+		
+		String message;
+		
+		if (strResponse.equals("saved item uploaded")) {
+			message = "Item posted";
+		} else if (strResponse.startsWith("edited item")) {
+			message = "Item updated";
+		} else if (strResponse.startsWith("edited item")) {
+			message = "Item deleted";
+		} else if (strResponse.equals("error")) {
+			message = "error occurred";
+		} else {
+			message = "data sent";
 		}
+		return message;
 	}
 	
-	private MultipartEntity listingToMultipartEntity(Listing listing) throws UnsupportedEncodingException {
+	private MultipartEntity createMultipartEntity() throws UnsupportedEncodingException {
+	
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+		entity.addPart("itemId", new StringBody(listing.getItemIdAsString()));
+		entity.addPart("command", new StringBody(sellerInfo.getCommandAsString()));
+
+		// reduce the information to be sent by not sending anything else
+		if (sellerInfo.getCommand() != AndroidUserCommand.DELETE){
+			addListingToEntity(entity);
+			addAccountToEntity(entity, sellerInfo.getFacebook(), "facebook");
+			addAccountToEntity(entity, sellerInfo.getTwitter(), "twitter");
+		} else {
+			entity.addPart("facebookUserId", new StringBody(sellerInfo.getFacebook().getUserId()));
+		}
 		
-		entity.addPart("name", new StringBody(listing.getName()));
-		entity.addPart("description", new StringBody(listing.getDescription()));
-		entity.addPart("price", new StringBody(listing.getPrice().toString()));
-		entity.addPart("image", bitmapToByteArrayBody(listing.getImage()));
-		entity.addPart("userId", new StringBody(userId));
-		entity.addPart("token", new StringBody(token));
-		
+		/*
+		//to be deleted
+		try {
+			Log.d("entities before sending", entity.toString());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		*/
 		return entity;
 	}
 	
-	private ByteArrayBody bitmapToByteArrayBody(Bitmap image) {
-	     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	     image.compress(CompressFormat.JPEG, 75, bos);
-	     
-	     byte[] data = bos.toByteArray();
-	     
-	     Log.d("image size sent after compression", ""+data.length);
-	     
-	     return new ByteArrayBody(data, "image.jpg");
+	private void addListingToEntity(MultipartEntity entity) throws UnsupportedEncodingException {
+		entity.addPart("name", new StringBody(listing.getName()));
+		entity.addPart("description", new StringBody(listing.getDescription()));
+		entity.addPart("price", new StringBody(listing.getPrice().toString()));
+		entity.addPart("image", bitmapToByteArrayBody(listing.getImage()));	
 	}
 	
-	private Runnable makeToast(final String message) {
-		return new Runnable() {
-			
-			public void run() {
+	private void addAccountToEntity(MultipartEntity entity, UserAccount account, String prefix) throws UnsupportedEncodingException {
+		if (account == null) {
+			account = new UserAccount("none","none",false);
+		}
+		entity.addPart(prefix+"Token", new StringBody(account.getAccessToken()));
+		entity.addPart(prefix + "UserId", new StringBody(account.getUserId()));
+		entity.addPart("postTo" + prefix, new StringBody(account.toPost()));
+	}
+	
+	private ByteArrayBody bitmapToByteArrayBody(Bitmap image) {
+	
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	    image.compress(CompressFormat.JPEG, 75, bos);
+	     
+	    byte[] data = bos.toByteArray();
+	     
+	    return new ByteArrayBody(data, "image.jpg");
+	}
+	
+	private void showToast(final String message) {
+		Runnable toast = new Runnable() {
+			@Override
+			public void run () {
 				Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 			}		
 		};
+		handler.post(toast);
 	}
 }

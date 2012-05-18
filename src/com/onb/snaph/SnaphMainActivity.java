@@ -31,12 +31,14 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,11 +47,13 @@ public class SnaphMainActivity extends Activity {
 	protected static final String TAG = SnaphMainActivity.class.getSimpleName();
 	protected static final int ACTIVITY_IMAGE_CAPTURE = 1000;
 	private static final int ACTIVITY_FROM_GALLERY = 1001;
+	private ArrayAdapter<CompressedListing> adapter;
+	
 	TextView greetings;
 	TextView userName;
 	ImageView userImage;
 	Handler userHandler;
-	SnaphApplication application;
+	SnaphApplication snaph;
 	AsyncFacebookRunner asyncRunner;
 	SharedPreferences sharedPrefs;
 	Facebook facebook; 
@@ -57,8 +61,8 @@ public class SnaphMainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        application = (SnaphApplication) getApplication();
-        facebook = new Facebook(application.APP_ID);
+        snaph = (SnaphApplication) getApplication();
+        facebook = new Facebook(snaph.APP_ID);
         setContentView(R.layout.main);
         userHandler = new Handler();
 		facebook.authorize(this, new DialogListener() {
@@ -87,17 +91,59 @@ public class SnaphMainActivity extends Activity {
     
     private void init(){
     	asyncRunner = new AsyncFacebookRunner(facebook);
-    	application.token = facebook.getAccessToken();
+    	snaph.fbToken = facebook.getAccessToken();
     	Bundle params = new Bundle();
    		params.putString("fields", "id, name, picture");
    		userName = (TextView) findViewById(R.id.userName);
     	userImage = (ImageView) findViewById(R.id.userImage);
     	asyncRunner.request("me", params, new userRequestListener());
     	
+    	Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>> 2 <<<<<<<<<<<<<<<<<<<<");
     	Button snapPhoto = (Button) findViewById(R.id.snap_photo);
     	snapPhoto.getBackground().setAlpha(70);
     	Button logout = (Button) findViewById(R.id.logout_button);
     	logout.getBackground().setAlpha(70);
+    	
+    	
+    	setListView();
+    }
+    
+    private void setListView(){
+    	adapter = createListingAdapter(getApplicationContext(), 0);
+    	snaph.setAdapter(adapter);
+    	ListView itemList = (ListView) findViewById(R.id.item_list);
+
+       // itemList.setAdapter(adapter);
+         
+        Log.d(TAG, "Token: "+snaph.fbToken);
+        Log.d(TAG, "UserId: "+snaph.fbUserId);
+        
+        while(snaph.fbUserId.equals("")){
+        	
+        }
+        
+        Thread thread = new RetrieverThread(getApplicationContext(), snaph.fbUserId, snaph.getAdapter());
+        thread.start();
+        try {
+			thread.join();
+			itemList.setAdapter(snaph.getAdapter());
+			adapter.notifyDataSetChanged();
+		} catch (InterruptedException e) {
+			Log.d("Thread join error", e.getMessage());
+			e.printStackTrace();
+		}
+        
+        itemList.setOnItemClickListener(new ListView.OnItemClickListener() {
+              public void onItemClick(AdapterView<?> a, View v, int i, long l) {
+                  try {
+                	//	showToast();
+                  }
+                  catch(Exception e) {
+                      
+                  }
+              }
+          });
+
     	Log.d(TAG,"OUT");
     }
     
@@ -106,15 +152,15 @@ public class SnaphMainActivity extends Activity {
     	final String RLTAG = userRequestListener.class.getSimpleName();
     	
     	public void onComplete(String response, Object state) {
+    		Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>> 1 <<<<<<<<<<<<<<<<<<<<");
     		JSONObject jsonObject;
     		try {
     			jsonObject = new JSONObject(response);
             	URL newurl = new URL(jsonObject.getString("picture")); 
             	Bitmap img = BitmapFactory.decodeStream(newurl.openConnection().getInputStream());
-            	application.userImage = img;
-            	application.userName = jsonObject.getString("name");
-            	application.userId = jsonObject.getString("id");
-            	Log.d(TAG,application.userId);
+            	snaph.fbUserImage = img;
+            	snaph.fbUserName = jsonObject.getString("name");
+            	snaph.fbUserId = jsonObject.getString("id");
     		} catch (JSONException e) {
     			e.printStackTrace();
     		} catch (MalformedURLException e) {
@@ -125,8 +171,8 @@ public class SnaphMainActivity extends Activity {
     		
     		userHandler.post(new Runnable() {
                 public void run() {
-                	userName.setText(application.userName);
-                	userImage.setImageBitmap(application.userImage);
+                	userName.setText(snaph.fbUserName);
+                	userImage.setImageBitmap(snaph.fbUserImage);
                 }
             });
     	}
@@ -147,6 +193,32 @@ public class SnaphMainActivity extends Activity {
     		Log.d(TAG,e.getMessage());
     	}
     	
+    }
+    
+    private ArrayAdapter<CompressedListing> createListingAdapter(Context context, int id) {
+    	ArrayAdapter<CompressedListing> adapter = new ArrayAdapter<CompressedListing>(context, id) {
+    		
+    		@Override
+    		public View getView(int position, View convertView, ViewGroup parent) {
+    			
+    			LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    			LinearLayout customView = new LinearLayout(getContext());
+    			
+    			inflater.inflate(R.layout.list_item, customView, true);
+    			
+    			TextView name = (TextView) customView.findViewById(R.id.list_item_name);
+    			TextView price = (TextView) customView.findViewById(R.id.list_item_price);
+    			
+    			CompressedListing currentItem = (CompressedListing) getItem(position);
+    			
+    			name.setText(currentItem.getName());
+    			price.setText(currentItem.getPrice());
+    			
+    			return customView;
+    		}
+
+    	};
+		return adapter;
     }
     
     public void onLogout(View view){
@@ -196,6 +268,8 @@ public class SnaphMainActivity extends Activity {
     	AlertDialog alert = builder.create();
     	alert.show();
     }
+    
+    
     
     private void snapImage(){
     	Intent launchCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
