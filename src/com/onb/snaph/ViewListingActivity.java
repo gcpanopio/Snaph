@@ -96,6 +96,7 @@ public class ViewListingActivity extends Activity{
 	public void onEdit(View view){
 
         Log.d(TAG, "Item pos>> "+itemPosition);
+        finish();
 		Intent editForm = new Intent(this, EditFormActivity.class);
     	editForm.putExtra("item_position", itemPosition);
   	  	startActivity(editForm);

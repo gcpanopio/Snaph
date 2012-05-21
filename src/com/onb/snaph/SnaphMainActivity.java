@@ -111,6 +111,8 @@ public class SnaphMainActivity extends Activity {
     	
     	itemList = (ListView) findViewById(R.id.item_list);
 
+    	Log.d(TAG, "Username: "+snaph.fbUserName);
+    	Log.d(TAG, "Id: "+snaph.fbUserId);
         Thread thread = new RetrieverThread(getApplicationContext(), snaph.fbUserId, snaph.getAdapter());
         thread.start();
         try {
@@ -161,6 +163,8 @@ public class SnaphMainActivity extends Activity {
             	snaph.fbUserImage = img;
             	snaph.fbUserName = jsonObject.getString("name");
             	snaph.fbUserId = jsonObject.getString("id");
+            	
+            	
     		} catch (JSONException e) {
     			e.printStackTrace();
     		} catch (MalformedURLException e) {

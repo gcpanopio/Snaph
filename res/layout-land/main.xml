@@ -5,32 +5,34 @@
     android:orientation="vertical"
     android:background="@color/white" >
     
-     <LinearLayout 
+      <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/black">
 	    
 	    <ImageView 
 	        android:id="@+id/userImage"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:paddingLeft="3dp"
-	        android:paddingTop="3dp"/>
+	        android:padding="5dp"/>
 	    
 	    <TextView 
 	        android:id="@+id/userName"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:paddingLeft="10dp"
-	        android:paddingTop="10dp"/>
+	        android:paddingTop="12dp"/>
     
     </LinearLayout>
-    
-       <TextView 
-        android:id="@+id/greeting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+
+    <ListView
+        android:id="@+id/item_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:layout_weight="1"
+        android:padding="5dp">
+    </ListView>
     
 	 <LinearLayout 
          android:orientation="horizontal"

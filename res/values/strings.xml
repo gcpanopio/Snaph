@@ -9,9 +9,9 @@
     <string name="login_button">Login using Facebook</string>
      <string name="logout_button">Logout</string>
      
-    <string name="form_title">Title</string>
-    <string name="form_price">Price</string>
-    <string name="form_description">Description</string>
+    <string name="form_title">TITLE</string>
+    <string name="form_price">PRICE</string>
+    <string name="form_description">DESCRIPTION</string>
     
     <string name="snap_button">Snap Photo!</string>
     <string name="upload_form">Upload Form</string>

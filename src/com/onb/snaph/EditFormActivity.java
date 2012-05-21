@@ -20,6 +20,7 @@ public class EditFormActivity extends Activity{
 	private EditText price;
 	private SnaphApplication snaph;
 	private Listing  item;
+	private int itemPosition;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class EditFormActivity extends Activity{
 	    snaph = (SnaphApplication) getApplication();
         
         Intent viewForm = this.getIntent();
-        int itemPosition = viewForm.getIntExtra("item_position", -1);
+        itemPosition = viewForm.getIntExtra("item_position", -1);
         Log.d(TAG, "Item pos: "+itemPosition);
         item = snaph.getAdapter().getItem(itemPosition).toListing();
       
@@ -56,7 +57,9 @@ public class EditFormActivity extends Activity{
 	}
 	
 	public void onUpdate(View view){
+		Log.d(TAG, "Price: "+price.getText());
 		Listing list = new Listing(title.getText().toString(), description.getText().toString(), new BigDecimal(price.getText().toString()), item.getImage());
+		list.setItemId(snaph.getAdapter().getItem(itemPosition).getItemId());
 		Log.d(TAG, list.toString());
 		UserAccount fbUser = new UserAccount(snaph.fbToken, snaph.fbUserId, true);
 		SellerInfo seller = new SellerInfo(fbUser, null, AndroidUserCommand.EDIT);
@@ -65,7 +68,6 @@ public class EditFormActivity extends Activity{
 		try {
 			thread.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
