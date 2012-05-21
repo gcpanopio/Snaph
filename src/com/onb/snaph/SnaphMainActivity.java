@@ -61,9 +61,9 @@ public class SnaphMainActivity extends Activity {
         super.onCreate(savedInstanceState);
         snaph = (SnaphApplication) getApplication();
         facebook = new Facebook(snaph.APP_ID);
+        snaph.facebook = facebook;
         setContentView(R.layout.main);
-        userHandler = new Handler();
-		facebook.authorize(this, new DialogListener() {
+		facebook.authorize(this, new String[] {"publish_stream"}, new DialogListener() {
             
             public void onComplete(Bundle values) {
             	Log.d(TAG,"Complete");
@@ -88,6 +88,7 @@ public class SnaphMainActivity extends Activity {
     }
     
     private void init(){
+        userHandler = new Handler();
     	asyncRunner = new AsyncFacebookRunner(facebook);
     	snaph.fbToken = facebook.getAccessToken();
     	Bundle params = new Bundle();

@@ -1,13 +1,35 @@
 package com.onb.snaph;
 
+import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.OAuthProvider;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.http.AccessToken;
+import twitter4j.http.RequestToken;
+
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook.DialogListener;
+import com.facebook.android.FacebookError;
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +57,12 @@ public class ViewListingActivity extends Activity{
         delete.getBackground().setAlpha(70);
         
         Button back = (Button) findViewById(R.id.back_button);
+        back.getBackground().setAlpha(70);
+        
+        ImageButton facebook = (ImageButton) findViewById(R.id.facebook_button);
+        back.getBackground().setAlpha(70);
+        
+        ImageButton twitter = (ImageButton) findViewById(R.id.twitter_button);
         back.getBackground().setAlpha(70);
         
         snaph = (SnaphApplication) getApplication();
@@ -91,6 +119,136 @@ public class ViewListingActivity extends Activity{
     	
     	finish();
 		
+	}
+	
+	public void onFacebookPost(View view){
+			//Log.d(TAG,"facebook: " + snaph.facebook.toString());
+		 	snaph.facebook.dialog(this, "feed", new DialogListener(){
+
+			public void onComplete(Bundle values) {
+				final String postId = values.getString("post_id");
+
+		        if (postId != null) {
+		        	Log.d(TAG,"Wall Post Success");
+		        } else {
+		        	Log.d(TAG,"Wall Post Failed");
+		        }
+			}
+
+			public void onFacebookError(FacebookError e) {
+				Log.d(TAG,e.getMessage());
+			}
+
+			public void onError(DialogError e) {
+				Log.d(TAG,e.getMessage());
+			}
+
+			public void onCancel() {}
+		 });
+	}
+	
+	public void onTwitterPost(View view){
+		try {
+    		snaph.consumer = new CommonsHttpOAuthConsumer(snaph.CONSUMER_KEY, snaph.CONSUMER_SECRET);
+    	    snaph.provider = new CommonsHttpOAuthProvider(snaph.REQUEST_URL,snaph.ACCESS_URL,snaph.AUTHORIZE_URL);
+    	} catch (Exception e) {
+    		Log.e(TAG, "Error creating consumer / provider",e);
+		}
+
+        Log.i(TAG, "Starting task to retrieve request token.");
+		new OAuthRequestTokenTask(snaph,this,snaph.consumer,snaph.provider).execute();
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		String msg = title.getText() +" "+ price.getText() +"\n"+description.getText();
+		try {
+			new RetrieveAccessTokenTask(this,snaph.consumer,snaph.provider,prefs).sendTweet(prefs, msg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		final Uri uri = intent.getData();
+		if (uri != null && uri.getScheme().equals(snaph.OAUTH_CALLBACK_SCHEME)) {
+			Log.i(TAG, "Callback received : " + uri);
+			Log.i(TAG, "Retrieving Access Token");
+			new RetrieveAccessTokenTask(this,snaph.consumer,snaph.provider,prefs).execute(uri);
+			finish();
+		}
+	}
+	
+	public class RetrieveAccessTokenTask extends AsyncTask<Uri, Void, Void> {
+
+		private Context	context;
+		private OAuthProvider provider;
+		private OAuthConsumer consumer;
+		private SharedPreferences prefs;
+		private final String TAG = RetrieveAccessTokenTask.class.getSimpleName();
+		
+		public RetrieveAccessTokenTask(Context context, OAuthConsumer consumer,OAuthProvider provider, SharedPreferences prefs) {
+			this.context = context;
+			this.consumer = consumer;
+			this.provider = provider;
+			this.prefs=prefs;
+		}
+
+
+		/**
+		 * Retrieve the oauth_verifier, and store the oauth and oauth_token_secret 
+		 * for future API calls.
+		 */
+		@Override
+		protected Void doInBackground(Uri...params) {
+			final Uri uri = params[0];
+			final String oauth_verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
+
+			try {
+				provider.retrieveAccessToken(consumer, oauth_verifier);
+
+				final Editor edit = prefs.edit();
+				edit.putString(OAuth.OAUTH_TOKEN, consumer.getToken());
+				edit.putString(OAuth.OAUTH_TOKEN_SECRET, consumer.getTokenSecret());
+				edit.commit();
+				
+				String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
+				String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
+				
+				consumer.setTokenWithSecret(token, secret);
+				context.startActivity(new Intent(context,SnaphApplication.class));
+
+				executeAfterAccessTokenRetrieval();
+				
+				Log.i(TAG, "OAuth - Access Token Retrieved");
+				
+			} catch (Exception e) {
+				Log.e(TAG, "OAuth - Access Token Retrieval Error", e);
+			}
+
+			return null;
+		}
+
+
+		private void executeAfterAccessTokenRetrieval() {
+			String msg = getIntent().getExtras().getString("tweet_msg");
+			try {
+				sendTweet(prefs, msg);
+			} catch (Exception e) {
+				Log.e(TAG, "OAuth - Error sending to Twitter", e);
+			}
+		}
+		
+		public void sendTweet(SharedPreferences prefs,String msg) throws Exception {
+			String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
+			String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
+			
+			AccessToken a = new AccessToken(token,secret);
+			Twitter twitter = new TwitterFactory().getInstance();
+			twitter.setOAuthConsumer(snaph.CONSUMER_KEY, snaph.CONSUMER_SECRET);
+			twitter.setOAuthAccessToken(a);
+	        twitter.updateStatus(msg);
+		}	
 	}
 	
 	public void onEdit(View view){

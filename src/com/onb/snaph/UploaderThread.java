@@ -148,8 +148,8 @@ public class UploaderThread extends Thread {
 	
 	private void showToast(final String message) {
 		Runnable toast = new Runnable() {
-			@Override
-			public void run () {
+			
+			public void run() {
 				Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 			}		
 		};

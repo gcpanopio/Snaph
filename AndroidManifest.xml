@@ -22,6 +22,9 @@
         </activity>
          <activity
             android:name=".ViewListingActivity" >
+            <intent-filter>
+                <data android:scheme="x-oauthflow-twitter" android:host="callback" />
+            </intent-filter>
         </activity>
          <activity
             android:name=".SnaphMainActivity"
