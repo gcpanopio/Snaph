@@ -142,10 +142,8 @@ public class SnaphMainActivity extends Activity {
     	setListView();
     }
     private void viewListing(int position){
-    	Log.d(TAG, "view Listing");
     	Intent viewForm = new Intent(this, ViewListingActivity.class);
     	viewForm.putExtra("item_position", position);
-    	Log.d(TAG, "intent + extra done");
   	  	startActivity(viewForm);
     }
 

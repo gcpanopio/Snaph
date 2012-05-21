@@ -18,6 +18,9 @@
             android:label="@string/upload_form" >
         </activity>
          <activity
+            android:name=".EditFormActivity">
+        </activity>
+         <activity
             android:name=".ViewListingActivity" >
         </activity>
          <activity

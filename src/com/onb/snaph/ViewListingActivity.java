@@ -1,20 +1,26 @@
 package com.onb.snaph;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class ViewListingActivity extends Activity{
 
+	protected static final String TAG = ViewListingActivity.class.getSimpleName();
+	
 	private ImageView image;
-	private EditText title;
-	private EditText description;
-	private EditText price;
+	private TextView title;
+	private TextView description;
+	private TextView price;
 	private SnaphApplication snaph;
+	private int itemPosition;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,27 +40,65 @@ public class ViewListingActivity extends Activity{
         snaph = (SnaphApplication) getApplication();
         
         Intent viewForm = this.getIntent();
-        int position = viewForm.getIntExtra("item_position", -1);
+        itemPosition = viewForm.getIntExtra("item_position", -1);
         
-        Listing item = snaph.getAdapter().getItem(position).toListing();
+        Log.d(TAG, "Item pos: "+itemPosition);
+        Listing item = snaph.getAdapter().getItem(itemPosition).toListing();
       
         
         image = (ImageView) findViewById(R.id.image_view);
         image.setImageBitmap(item.getImage());
-        title = (EditText) findViewById(R.id.title_view);
+        title = (TextView) findViewById(R.id.title_view);
         title.setText(item.getName());
-        description = (EditText) findViewById(R.id.description_view);
+        description = (TextView) findViewById(R.id.description_view);
         description.setText(item.getDescription());
-        price = (EditText) findViewById(R.id.price_view);
+        price = (TextView) findViewById(R.id.price_view);
         price.setText(item.getPrice().toString());
     }
 	
-	public void onDelete(){
+	public void onDelete(View view){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Are you sure you want to delete this item?")
+		       .setCancelable(false)
+		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+		       })
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	           public void onClick(DialogInterface dialog, int id) {
+	                deleteItem();
+	           }
+	       });
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
+	private void deleteItem() {
+		Listing item = new Listing(null, null, null, null);
+		item.setItemId(snaph.getAdapter().getItem(itemPosition).getItemId());
+		
+		UserAccount fbUser = new UserAccount(snaph.fbToken, snaph.fbUserId, true);
+    	SellerInfo seller = new SellerInfo(fbUser, null, AndroidUserCommand.DELETE);
+    	Thread thread = new UploaderThread(this.getBaseContext(), item, seller);
+    	thread.start();
+    	try {
+			thread.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	finish();
 		
 	}
 	
-	public void onEdit(){
-		
+	public void onEdit(View view){
+
+        Log.d(TAG, "Item pos>> "+itemPosition);
+		Intent editForm = new Intent(this, EditFormActivity.class);
+    	editForm.putExtra("item_position", itemPosition);
+  	  	startActivity(editForm);
 	}
 	
 	public void onBack(View view){

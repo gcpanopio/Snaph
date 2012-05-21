@@ -8,51 +8,55 @@
          android:layout_width="fill_parent"
     	 android:layout_height="wrap_content"
    		 android:layout_weight="1">
-   		 
 	    <LinearLayout
 	         android:layout_width="fill_parent"
 	    	 android:layout_height="wrap_content"
 	    	 android:orientation="vertical">
 	    	 
 		    <ImageView
-		        android:id="@+id/image_view"
-		        android:layout_width="fill_parent"
+		        android:id="@+id/image_edit"
+		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_gravity="center_horizontal"
 		        android:layout_weight="2.28"
 		        android:contentDescription="@string/text_content_description"
 		        android:paddingBottom="10dp"
-		        android:paddingTop="10dp"/>
+		        android:paddingTop="10dp"
+		       	android:adjustViewBounds="true"/>
 		     
 		     <TextView
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:text="@string/form_title" />
 		     
-		     <TextView
-		         android:id="@+id/title_view"
+		     <EditText 
+		         android:id="@+id/title_edit"
 		         android:layout_width="fill_parent"
-		         android:layout_height="wrap_content"/>
+		         android:layout_height="wrap_content"
+		         android:inputType="text"/>
 		     
-		     <TextView
+		      <TextView
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:text="@string/form_price" />
 		     
-		     <TextView 
-		         android:id="@+id/price_view"
+		     <EditText 
+		         android:id="@+id/price_edit"
 		         android:layout_width="fill_parent"
-		         android:layout_height="wrap_content"/>
+		         android:layout_height="wrap_content"
+		         android:inputType="numberDecimal"/>
 		     
-		     <TextView
+		      <TextView
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:text="@string/form_description" />
 		     
-		     <TextView 
-		         android:id="@+id/description_view"
+		     <EditText 
+		         android:id="@+id/description_edit"
 		         android:layout_width="fill_parent"
-		         android:layout_height="wrap_content"/>
+		         android:layout_height="wrap_content"
+		         android:inputType="textMultiLine"
+		         android:gravity="top"/>
 		  </LinearLayout>
 	  </ScrollView>
     
@@ -61,28 +65,21 @@
           android:layout_height="wrap_content"
           android:background="@color/black"
           android:orientation="horizontal"
-          android:paddingTop="5dp">
+          android:paddingTop="5dp" >
          
 	    <Button
-	        android:id="@+id/edit_button"
-	        android:layout_width="106dp"
+	        android:id="@+id/update_item"
+	        android:layout_width="159dp"
 	        android:layout_height="wrap_content"
-	        android:text="@string/edit_button" 
-	        android:onClick="onEdit"/>
-	    
-	      <Button
-	        android:id="@+id/delete_button"
-	        android:layout_width="106dp"
-	        android:layout_height="wrap_content"
-	        android:text="@string/delete_button" 
-	        android:onClick="onDelete"/>
+	        android:text="@string/update_button" 
+	        android:onClick="onUpdate"/>
       
          <Button 
-             android:id="@+id/back_button"
-             android:text="@string/back_button"
-             android:layout_width="106dp"
+             android:id="@+id/cancel_update"
+             android:text="@string/cancel_button"
+             android:layout_width="160dp"
              android:layout_height="wrap_content"
-             android:onClick="onBack"/>
+             android:onClick="onCancel"/>
          
        </LinearLayout>
     
