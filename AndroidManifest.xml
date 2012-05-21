@@ -9,6 +9,9 @@
     <uses-feature android:name="android.hardware.camera" />  
     <uses-permission android:name="android.permission.CAMERA"/>
 	<uses-permission android:name="android.permission.INTERNET"/>
+	<supports-screens android:smallScreens="true"
+                      android:normalScreens="true"
+                      android:largeScreens="false"/>	
     <application
         android:name=".SnaphApplication"
         android:icon="@drawable/snaph_launcher"

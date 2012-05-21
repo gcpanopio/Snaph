@@ -4,8 +4,8 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:background="@color/white" >
-
-    <LinearLayout 
+    
+      <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -33,32 +33,32 @@
         android:layout_weight="1"
         android:padding="5dp">
     </ListView>
- 
     
-	<LinearLayout
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="0"
-	    android:background="@color/black"
-	    android:orientation="horizontal"
-	    android:padding="3dp" >
+	 <LinearLayout 
+         android:orientation="horizontal"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginTop="5dp"
+         android:layout_weight="0"
+         android:background="@color/black"
+    	 android:paddingTop="5dp">
 
-	    <Button
-	        android:id="@+id/snap_photo"
-	        android:layout_width="152dp"
-	        android:layout_height="wrap_content"
-	        android:onClick="onSnapButtonActivity"
-	        android:padding="0dp"
-	        android:text="@string/snap_button" />
-
+	     <Button
+	         android:id="@+id/snap_photo"
+	         android:layout_width="210dp"
+	         android:layout_height="wrap_content"
+	         android:onClick="onSnapButtonActivity"
+	         android:text="@string/snap_button" />
+    
 	    <Button
 	        android:id="@+id/logout_button"
-	        android:layout_width="160dp"
+	        android:layout_width="210dp"
 	        android:layout_height="wrap_content"
-	        android:layout_weight="2.89"
 	        android:onClick="onLogout"
-	        android:padding="0dp"
 	        android:text="@string/logout_button" />
+    
 	</LinearLayout>
- 
+    
+
 </LinearLayout>
