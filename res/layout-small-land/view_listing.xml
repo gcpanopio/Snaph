@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+    
+     <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.98" 
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="210dp"
+                android:layout_height="209dp"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@string/text_content_description"
+                android:cropToPadding="true"
+                android:paddingBottom="10dp"
+                android:paddingTop="0dp" />
+            
+            <TableLayout android:id="@+id/TableLayout01"
+				 android:layout_width="fill_parent"
+				 android:layout_height="wrap_content">
+		    
+		     <TextView
+		         android:layout_width="fill_parent"
+		         android:layout_height="wrap_content"
+		         android:text="@string/form_title"
+		         android:textSize="15dp"
+		         android:textStyle="bold"
+		         android:background="@color/black"
+		         android:layout_margin="3dp"/>
+		     
+		     <TextView
+		        android:id="@+id/title_view"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="3dp"/>
+		     
+		     <TextView
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:text="@string/form_price" 
+		        android:textSize="15dp" 
+        		android:textStyle="bold"
+        		android:background="@color/black"
+        		android:layout_margin="3dp"/>
+		     
+		     <TextView 
+		        android:id="@+id/price_view"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="3dp"/>
+		     
+		     <TextView
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:text="@string/form_description"
+		        android:textSize="15dp" 
+        		android:textStyle="bold"
+        		android:background="@color/black" 
+        		android:layout_margin="3dp"/>
+		     
+		     <TextView 
+		        android:id="@+id/description_view"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="3dp"/>
+
+           </TableLayout>
+        </LinearLayout>
+    </ScrollView>
+    
+      <LinearLayout
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/black"
+          android:orientation="horizontal"
+          android:paddingTop="5dp" >
+
+          <Button
+              android:id="@+id/edit_button"
+              android:layout_width="106dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="0.08"
+              android:onClick="onEdit"
+              android:text="@string/edit_button" />
+
+          <Button
+              android:id="@+id/delete_button"
+              android:layout_width="106dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="0.06"
+              android:onClick="onDelete"
+              android:text="@string/delete_button" />
+
+          <Button
+              android:id="@+id/back_button"
+              android:layout_width="106dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="0.07"
+              android:onClick="onBack"
+              android:text="@string/back_button" />
+
+      </LinearLayout>
+    
+</LinearLayout>
