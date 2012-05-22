@@ -20,6 +20,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * 
+ * 
+ *
+ */
 public class ViewListingActivity extends Activity{
 
 	protected static final String TAG = ViewListingActivity.class.getSimpleName();
@@ -76,6 +81,10 @@ public class ViewListingActivity extends Activity{
         price.setText(item.getPrice().toString());
     }
 	
+	/**
+	 * 
+	 * @param view
+	 */
 	public void onDelete(View view){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Are you sure you want to delete this item?")
@@ -98,7 +107,7 @@ public class ViewListingActivity extends Activity{
 		Listing item = new Listing(null, null, null, null);
 		item.setItemId(snaph.getAdapter().getItem(itemPosition).getItemId());
 		
-		UserAccount fbUser = new UserAccount(snaph.fbToken, snaph.fbUserId, true);
+		UserAccount fbUser = new UserAccount(snaph.getFbToken(), snaph.getFbUserId(), true);
     	SellerInfo seller = new SellerInfo(fbUser, null, AndroidUserCommand.DELETE);
     	Thread thread = new UploaderThread(this.getBaseContext(), item, seller);
     	thread.start();
@@ -112,15 +121,38 @@ public class ViewListingActivity extends Activity{
 		
 	}
 	
+	/**
+     * 
+     * @param view
+     */
+	public void onEdit(View view){
+
+        Log.d(TAG, "Item pos>> "+itemPosition);
+        finish();
+		Intent editForm = new Intent(this, EditFormActivity.class);
+    	editForm.putExtra("item_position", itemPosition);
+  	  	startActivity(editForm);
+	}
+	
+	/**
+	 * 
+	 * @param view
+	 */
+	public void onBack(View view){
+		finish();
+	}
+	/**
+	 * 
+	 * @param view
+	 */
 	public void onFacebookPost(View view){
-			//Log.d(TAG,"facebook: " + snaph.facebook.toString());
 			Bundle params = new Bundle();
 			params.putString("link", listingLink);
 			params.putString("picture", imageLink);
 			params.putString("name", title.getText().toString());
 			params.putString("description", description.getText().toString());
 			params.putString("caption", price.getText().toString());
-		 	snaph.facebook.dialog(this, "feed", params, new DialogListener(){
+		 	snaph.getFacebook().dialog(this, "feed", params, new DialogListener(){
 
 			public void onComplete(Bundle values) {
 				final String postId = values.getString("post_id");
@@ -144,11 +176,15 @@ public class ViewListingActivity extends Activity{
 		 });
 	}
 	
+	/**
+	 * 
+	 * @param view
+	 */
 	public void onTwitterPost(View view){
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if (TwitterUtils.isAuthenticated(prefs)) {
 			sendTweet();
- } 
+		} 
 		else {
 			Intent i = new Intent(getApplicationContext(), PrepareRequestTokenActivity.class);
 			i.putExtra("tweet_msg",getTweetMsg());
@@ -160,6 +196,9 @@ public class ViewListingActivity extends Activity{
 		return "Selling " + title.getText() + " for " + price.getText();
 	}	
 	
+	/**
+	 * 
+	 */
 	public void sendTweet() {
 		Thread t = new Thread() {
 	        public void run() {
@@ -181,17 +220,4 @@ public class ViewListingActivity extends Activity{
         	Toast.makeText(getBaseContext(), "Tweet sent !", Toast.LENGTH_LONG).show();
         }
     };
-	
-	public void onEdit(View view){
-
-        Log.d(TAG, "Item pos>> "+itemPosition);
-        finish();
-		Intent editForm = new Intent(this, EditFormActivity.class);
-    	editForm.putExtra("item_position", itemPosition);
-  	  	startActivity(editForm);
-	}
-	
-	public void onBack(View view){
-		finish();
-	}
 }

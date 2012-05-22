@@ -52,7 +52,6 @@ public class SnaphMainActivity extends Activity {
 	private Handler userHandler;
 	private SnaphApplication snaph;
 	private AsyncFacebookRunner asyncRunner;
-	//private SharedPreferences sharedPrefs;
 	private Facebook facebook; 
 	private ListView itemList;
 	 
@@ -61,7 +60,7 @@ public class SnaphMainActivity extends Activity {
         super.onCreate(savedInstanceState);
         snaph = (SnaphApplication) getApplication();
         facebook = new Facebook(snaph.APP_ID);
-        snaph.facebook = facebook;
+        snaph.setFacebook(facebook);
         setContentView(R.layout.main);
 		facebook.authorize(this, new String[] {"publish_stream"}, new DialogListener() {
             
@@ -90,14 +89,14 @@ public class SnaphMainActivity extends Activity {
     private void init(){
         userHandler = new Handler();
     	asyncRunner = new AsyncFacebookRunner(facebook);
-    	snaph.fbToken = facebook.getAccessToken();
+    	snaph.setFbToken(facebook.getAccessToken());
     	Bundle params = new Bundle();
    		params.putString("fields", "id, name, picture");
    		userName = (TextView) findViewById(R.id.userName);
     	userImage = (ImageView) findViewById(R.id.userImage);
     	asyncRunner.request("me", params, new userRequestListener());
     	
-    	Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>> 2 <<<<<<<<<<<<<<<<<<<<");
+    	Log.d(TAG, "[2] Initialize");
     	Button snapPhoto = (Button) findViewById(R.id.snap_photo);
     	snapPhoto.getBackground().setAlpha(70);
     	Button logout = (Button) findViewById(R.id.logout_button);
@@ -112,9 +111,9 @@ public class SnaphMainActivity extends Activity {
     	
     	itemList = (ListView) findViewById(R.id.item_list);
 
-    	Log.d(TAG, "Username: "+snaph.fbUserName);
-    	Log.d(TAG, "Id: "+snaph.fbUserId);
-        Thread thread = new RetrieverThread(getApplicationContext(), snaph.fbUserId, snaph.getAdapter());
+    	Log.d(TAG, "Username: "+snaph.getFbUserName());
+    	Log.d(TAG, "Id: "+snaph.getFbUserId());
+        Thread thread = new RetrieverThread(getApplicationContext(), snaph.getFbUserId(), snaph.getAdapter());
         thread.start();
         try {
 			thread.join();
@@ -128,7 +127,7 @@ public class SnaphMainActivity extends Activity {
         itemList.setOnItemClickListener(new ListView.OnItemClickListener() {
               public void onItemClick(AdapterView<?> a, View v, int i, long l) {
                   try {
-                	  Log.d(TAG, "item clicked on position "+i);
+                	  Log.d(TAG, "Item clicked on position "+i);
                 	  viewListing(i);
                   }
                   catch(Exception e) {
@@ -140,31 +139,42 @@ public class SnaphMainActivity extends Activity {
     	Log.d(TAG,"OUT");
     }
     
+    /**
+     * 
+     */
     public void onResume(){
     	super.onResume();
     	init();
-    	//setListView();
     }
+    
     private void viewListing(int position){
     	Intent viewForm = new Intent(this, ViewListingActivity.class);
     	viewForm.putExtra("item_position", position);
   	  	startActivity(viewForm);
     }
 
+    /**
+     * 
+     * 
+     *
+     */
     class userRequestListener implements RequestListener {
 
     	final String RLTAG = userRequestListener.class.getSimpleName();
     	
+    	/**
+    	 * 
+    	 */
     	public void onComplete(String response, Object state) {
-    		Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>> 1 <<<<<<<<<<<<<<<<<<<<");
+    		Log.d(TAG, "[1] Facebook User Request Listener");
     		JSONObject jsonObject;
     		try {
     			jsonObject = new JSONObject(response);
             	URL newurl = new URL(jsonObject.getString("picture")); 
             	Bitmap img = BitmapFactory.decodeStream(newurl.openConnection().getInputStream());
-            	snaph.fbUserImage = img;
-            	snaph.fbUserName = jsonObject.getString("name");
-            	snaph.fbUserId = jsonObject.getString("id");
+            	snaph.setFbUserImage(img);
+            	snaph.setFbUserName(jsonObject.getString("name"));
+            	snaph.setFbUserId(jsonObject.getString("id"));
             	
             	
     		} catch (JSONException e) {
@@ -177,8 +187,8 @@ public class SnaphMainActivity extends Activity {
     		
     		userHandler.post(new Runnable() {
                 public void run() {
-                	userName.setText(snaph.fbUserName);
-                	userImage.setImageBitmap(snaph.fbUserImage);
+                	userName.setText(snaph.getFbUserName());
+                	userImage.setImageBitmap(snaph.getFbUserImage());
                 }
             });
     	}
@@ -227,6 +237,10 @@ public class SnaphMainActivity extends Activity {
 		return adapter;
     }
     
+    /**
+     * 
+     * @param view
+     */
     public void onLogout(View view){
     	asyncRunner.logout(this, new RequestListener() {
 
@@ -255,6 +269,10 @@ public class SnaphMainActivity extends Activity {
     		});
     }
     
+    /**
+     * 
+     * @param view
+     */
     public void onSnapButtonActivity(View view){    	
     	final CharSequence[] items = {"Snap Image", "Upload from Gallery"};
 
@@ -274,8 +292,6 @@ public class SnaphMainActivity extends Activity {
     	AlertDialog alert = builder.create();
     	alert.show();
     }
-    
-    
     
     private void snapImage(){
     	Intent launchCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

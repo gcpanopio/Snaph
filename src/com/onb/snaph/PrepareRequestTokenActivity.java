@@ -114,7 +114,6 @@ public class PrepareRequestTokenActivity extends Activity {
 			return null;
 		}
 
-
 		private void executeAfterAccessTokenRetrieval() {
 			String msg = getIntent().getExtras().getString("tweet_msg");
 			try {

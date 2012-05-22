@@ -10,6 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+/**
+ * 
+ * @author girah
+ *
+ */
 public class UploadFormActivity extends Activity{
 	protected static final String TAG = UploadFormActivity.class.getSimpleName();
 	
@@ -41,16 +46,23 @@ public class UploadFormActivity extends Activity{
         price = (EditText) findViewById(R.id.price);
     }
     
+    /**
+     * 
+     * @param view
+     */
     public void onCancel(View view){
     	finish();
     }
     
+    /**
+     * 
+     * @param view
+     */
     public void onUpload(View view){
     	Listing list = new Listing(title.getText().toString(), description.getText().toString(), new BigDecimal(price.getText().toString()), snaph.getImage());
-    	
-    	
-    	UserAccount fbUser = new UserAccount(snaph.fbToken, snaph.fbUserId, true);
+    	UserAccount fbUser = new UserAccount(snaph.getFbToken(), snaph.getFbUserId(), true);
     	SellerInfo seller = new SellerInfo(fbUser, null, AndroidUserCommand.INSERT);
+    	
     	Thread thread = new UploaderThread(this.getBaseContext(), list, seller);
     	thread.start();
     	try {
@@ -59,7 +71,6 @@ public class UploadFormActivity extends Activity{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	
     	
     	finish();
     }

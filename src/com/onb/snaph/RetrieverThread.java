@@ -23,21 +23,24 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+/**
+ *
+ *
+ */
 public class RetrieverThread extends Thread {
 
 	private String address = "http://10.10.5.122:8080/Snaph/retrieve";
 	
 	private String fbUserId;
 	private ArrayAdapter<CompressedListing> adapter;
-	
-	// these are for the toast
 	private Context context;
 	private Handler handler;
+	
 	public RetrieverThread(Context context, String fbUserId, ArrayAdapter<CompressedListing> adapter) {
 		super();
+		
 		this.fbUserId = fbUserId;
 		this.adapter = adapter;
-		
 		this.context = context;
 		handler = new Handler();
 	}
@@ -121,7 +124,6 @@ public class RetrieverThread extends Thread {
 		}
 	}
 	
-	// parses one instance of Listing from the json array
 	private CompressedListing parseJSONObject(JSONObject obj) throws JSONException {
 		String name = obj.getString("name");
 		String description = obj.getString("description");

@@ -1,8 +1,8 @@
 package com.onb.snaph;
 
-/*
- * A class whose fields are immutable. The purpose is to wrap into one package user information
- * before sending to the web app.
+/**
+ * A class whose fields are immutable. The purpose is to wrap into one package all the user's information
+ * before sending to the web application.
  */
 
 public class SellerInfo {
@@ -20,12 +20,15 @@ public class SellerInfo {
 	public UserAccount getFacebook() {
 		return facebook;
 	}
+	
 	public UserAccount getTwitter() {
 		return twitter;
 	}
+	
 	public AndroidUserCommand getCommand() {
 		return this.command;
 	}
+	
 	public String getCommandAsString() {
 		return getCommand().toString();
 	}

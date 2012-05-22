@@ -1,5 +1,10 @@
 package com.onb.snaph;
 
+/**
+ * 
+ * 
+ *
+ */
 public class UserAccount {
 	private String accessToken;
 	private String userId;

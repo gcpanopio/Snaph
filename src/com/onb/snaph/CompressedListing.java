@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-
 /**
  * CompressedListing represents an item fetched from the web app.
  * 
@@ -37,6 +36,15 @@ public class CompressedListing {
 	private String imageUri;
 	private String itemUrl;
 	
+	/**
+	 * 
+	 * @param itemId
+	 * @param name
+	 * @param description
+	 * @param price
+	 * @param imageUri
+	 * @param itemUrl
+	 */
 	public CompressedListing(int itemId, String name, String description, String price, String imageUri, String itemUrl) {
 		this.itemId = itemId;
 		this.name = name;
@@ -49,21 +57,27 @@ public class CompressedListing {
 	public int getItemId() {
 		return itemId;
 	}
+	
 	public String getName() {
 		return name;
 	}
+	
 	public String getPrice() {
 		return price;
 	}
+	
 	public String getDescription() {
 		return description;
 	}
+	
 	public String getImageUri() {
 		return imageUri;
 	}
+	
 	public String getItemUrl() {
 		return itemUrl;
 	}
+	
 	/**
 	 * This function takes time to complete because image will be fetched from web.
 	 * A Toast or Loading dialog is encouraged when this function is called.
@@ -79,6 +93,10 @@ public class CompressedListing {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Bitmap getImageBitmap() {
 		Bitmap result = null;
 		ArrayList<Bitmap> list = new ArrayList<Bitmap>(1);

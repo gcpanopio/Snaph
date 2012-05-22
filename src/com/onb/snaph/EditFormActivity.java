@@ -11,6 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+/**
+ * 
+ * 
+ *
+ */
 public class EditFormActivity extends Activity{
 	protected static final String TAG = EditFormActivity.class.getSimpleName();
 		
@@ -22,6 +27,9 @@ public class EditFormActivity extends Activity{
 	private Listing  item;
 	private int itemPosition;
 	
+	/**
+	 * 
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		
@@ -52,16 +60,24 @@ public class EditFormActivity extends Activity{
         price.setText(item.getPrice().toString());
 	}
 	
+	/**
+	 * 
+	 * @param view
+	 */
 	public void onCancel(View view){
 		finish();
 	}
 	
+	/**
+	 * 
+	 * @param view
+	 */
 	public void onUpdate(View view){
 		Log.d(TAG, "Price: "+price.getText());
 		Listing list = new Listing(title.getText().toString(), description.getText().toString(), new BigDecimal(price.getText().toString()), item.getImage());
 		list.setItemId(snaph.getAdapter().getItem(itemPosition).getItemId());
 		Log.d(TAG, list.toString());
-		UserAccount fbUser = new UserAccount(snaph.fbToken, snaph.fbUserId, true);
+		UserAccount fbUser = new UserAccount(snaph.getFbToken(), snaph.getFbUserId(), true);
 		SellerInfo seller = new SellerInfo(fbUser, null, AndroidUserCommand.EDIT);
 		Thread thread = new UploaderThread(this.getBaseContext(), list, seller);
 		thread.start();

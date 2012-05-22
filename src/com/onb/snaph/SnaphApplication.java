@@ -1,6 +1,5 @@
 package com.onb.snaph;
 
-
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
 import twitter4j.Twitter;
@@ -28,18 +27,18 @@ public class SnaphApplication extends Application{
 	public static final String	OAUTH_CALLBACK_HOST		= "callback";
 	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 	
-	String fbUserName = "";
-	String fbUserId = "";
-	String fbToken="";
-	Bitmap fbUserImage;
+	private String fbUserName = "";
+	private String fbUserId = "";
+	private String fbToken="";
+	private Bitmap fbUserImage;
 	
 	OAuthConsumer consumer; 
     OAuthProvider provider;
 	
-	SharedPreferences sharedPrefs;
-	AsyncFacebookRunner asyncRunner;
-	Twitter twitter;
-	Facebook facebook;
+	private SharedPreferences sharedPrefs;
+	private AsyncFacebookRunner asyncRunner;
+	private Twitter twitter;
+	private Facebook facebook;
 	final String APP_ID = "366360670078534";
 	
 	@Override
@@ -64,6 +63,50 @@ public class SnaphApplication extends Application{
 	
 	public Bitmap getImage(){
 		return this.image;
+	}
+	
+	public int getItemIdAtPosition(int position){
+		return adapter.getItem(position).getItemId();
+	}
+
+	public String getFbToken() {
+		return fbToken;
+	}
+
+	public void setFbToken(String fbToken) {
+		this.fbToken = fbToken;
+	}
+
+	public String getFbUserId() {
+		return fbUserId;
+	}
+
+	public void setFbUserId(String fbUserId) {
+		this.fbUserId = fbUserId;
+	}
+
+	public Facebook getFacebook() {
+		return facebook;
+	}
+
+	public void setFacebook(Facebook facebook) {
+		this.facebook = facebook;
+	}
+
+	public String getFbUserName() {
+		return fbUserName;
+	}
+
+	public void setFbUserName(String fbUserName) {
+		this.fbUserName = fbUserName;
+	}
+
+	public Bitmap getFbUserImage() {
+		return fbUserImage;
+	}
+
+	public void setFbUserImage(Bitmap fbUserImage) {
+		this.fbUserImage = fbUserImage;
 	}
 	
 }

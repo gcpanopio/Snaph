@@ -27,13 +27,18 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * 
+ * Responsible for sending data to the web application.
+ *
+ */
 public class UploaderThread extends Thread {
-	private Context context;
-	private Listing listing;
-	private SellerInfo sellerInfo;
 	
 	private String address = "http://10.10.5.122:8080/Snaph/upload";
 	
+	private Context context;
+	private Listing listing;
+	private SellerInfo sellerInfo;
 	private Handler handler;
 	
 	public UploaderThread(Context context, Listing listing, SellerInfo sellerInfo) {

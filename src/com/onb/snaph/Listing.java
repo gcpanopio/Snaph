@@ -24,9 +24,18 @@ public class Listing {
 	private Bitmap image;
 	private String itemUrl;
 	private String imageUrl;
-	//this is the database id from web app. A new Listing in android app has no itemId
 	private int itemId;
 	
+	/**
+	 * 
+	 * @param name
+	 * @param description
+	 * @param price
+	 * @param image
+	 * @param itemId
+	 * @param itemUrl
+	 * @param imageUrl
+	 */
 	public Listing(String name, String description, BigDecimal price, Bitmap image, int itemId, String itemUrl, String imageUrl) {
 		this.name = name;
 		this.description = description;
@@ -37,6 +46,13 @@ public class Listing {
 		this.setItemUrl(itemUrl);
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 * @param description
+	 * @param price
+	 * @param image
+	 */
 	public Listing(String name, String description, BigDecimal price, Bitmap image) {
 		this(name, description, price, image, -1, "", "");
 	}
@@ -85,6 +101,22 @@ public class Listing {
 		this.itemId = itemId;
 	}
 
+	public String getItemUrl() {
+		return itemUrl;
+	}
+
+	public void setItemUrl(String itemUrl) {
+		this.itemUrl = itemUrl;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -122,21 +154,5 @@ public class Listing {
 		} else if (!price.equals(other.price))
 			return false;
 		return true;
-	}
-
-	public String getItemUrl() {
-		return itemUrl;
-	}
-
-	public void setItemUrl(String itemUrl) {
-		this.itemUrl = itemUrl;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
 	}
 }
