@@ -8,7 +8,7 @@
          android:layout_width="fill_parent"
     	 android:layout_height="wrap_content"
    		 android:layout_weight="1"
-   		 android:background="@color/white">
+   		 android:background="@color/black">
    		 
 	    <LinearLayout
 	         android:layout_width="fill_parent"
@@ -36,7 +36,6 @@
 		         android:text="@string/form_title"
 		         android:textSize="15dp"
 		         android:textStyle="bold"
-		         android:background="@color/black"
 		         android:layout_margin="3dp"/>
 		     
 		     <TextView
@@ -51,7 +50,6 @@
 		        android:text="@string/form_price" 
 		        android:textSize="15dp" 
         		android:textStyle="bold"
-        		android:background="@color/black"
         		android:layout_margin="3dp"/>
 		     
 		     <TextView 
@@ -66,7 +64,6 @@
 		        android:text="@string/form_description"
 		        android:textSize="15dp" 
         		android:textStyle="bold"
-        		android:background="@color/black" 
         		android:layout_margin="3dp"/>
 		     
 		     <TextView 
@@ -83,44 +80,43 @@
           android:layout_height="wrap_content"
           android:background="@color/black"
           android:orientation="horizontal"
-          android:paddingTop="5dp">
-	    
+          android:paddingTop="5dp" >
+
           <ImageButton
               android:id="@+id/facebook_button"
-              android:src="@drawable/facebook_icon"
               android:layout_width="50dp"
               android:layout_height="50dp"
-              android:onClick="onFacebookPost"/>
-          
+              android:onClick="onFacebookPost"
+              android:src="@drawable/facebook_icon" />
+
           <ImageButton
               android:id="@+id/twitter_button"
-              android:src="@drawable/twitter_icon"
               android:layout_width="50dp"
               android:layout_height="50dp"
-              android:onClick="onTwitterPost"/>
-              
-         
-	      <Button
-	        android:id="@+id/edit_button"
-	        android:layout_width="106dp"
-	        android:layout_height="wrap_content"
-	        android:text="@string/edit_button" 
-	        android:onClick="onEdit"/>
-	    
-	      <Button
-	        android:id="@+id/delete_button"
-	        android:layout_width="106dp"
-	        android:layout_height="wrap_content"
-	        android:text="@string/delete_button" 
-	        android:onClick="onDelete"/>
-      
-         <Button 
-            android:id="@+id/back_button"
-            android:text="@string/back_button"
-            android:layout_width="106dp"
-            android:layout_height="wrap_content"
-            android:onClick="onBack"/>
-         
-       </LinearLayout>
+              android:onClick="onTwitterPost"
+              android:src="@drawable/twitter_icon" />
+
+          <Button
+              android:id="@+id/edit_button"
+              android:layout_width="69dp"
+              android:layout_height="wrap_content"
+              android:onClick="onEdit"
+              android:text="@string/edit_button" />
+
+          <Button
+              android:id="@+id/delete_button"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="0.95"
+              android:onClick="onDelete"
+              android:text="@string/delete_button" />
+
+          <Button
+              android:id="@+id/back_button"
+              android:layout_width="74dp"
+              android:layout_height="wrap_content"
+              android:onClick="onBack"
+              android:text="@string/back_button" />
+      </LinearLayout>
     
 </LinearLayout>
