@@ -32,7 +32,7 @@ public class UploaderThread extends Thread {
 	private Listing listing;
 	private SellerInfo sellerInfo;
 	
-	private String address = "http://124.104.156.136:8080/Snaph/upload";
+	private String address = "http://10.10.5.122:8080/Snaph/upload";
 	
 	private Handler handler;
 	

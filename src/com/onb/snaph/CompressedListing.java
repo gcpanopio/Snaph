@@ -73,8 +73,9 @@ public class CompressedListing {
 		BigDecimal price = new BigDecimal(this.getPrice());
 		Bitmap image = this.getImageBitmap();
 		Listing result = new Listing(this.getName(), this.getDescription(), price, image);		
-		result.setItemId(this.getItemId());
-		
+		result.setItemId(getItemId());
+		result.setItemUrl(getItemUrl());
+		result.setImageUrl(getImageUri());
 		return result;
 	}
 	

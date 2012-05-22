@@ -142,7 +142,8 @@ public class SnaphMainActivity extends Activity {
     
     public void onResume(){
     	super.onResume();
-    	setListView();
+    	init();
+    	//setListView();
     }
     private void viewListing(int position){
     	Intent viewForm = new Intent(this, ViewListingActivity.class);

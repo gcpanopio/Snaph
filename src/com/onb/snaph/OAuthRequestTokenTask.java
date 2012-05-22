@@ -1,6 +1,5 @@
 package com.onb.snaph;
 
-
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
 import android.content.Context;
@@ -25,7 +24,6 @@ public class OAuthRequestTokenTask extends AsyncTask<Void, Void, Void> {
 	private Context	 context;
 	private OAuthProvider provider;
 	private OAuthConsumer consumer;
-	private SnaphApplication snaph;
 
 	/**
 	 * 
@@ -38,11 +36,10 @@ public class OAuthRequestTokenTask extends AsyncTask<Void, Void, Void> {
 	 * @param 	consumer
 	 * 			The OAuthConsumer object
 	 */
-	public OAuthRequestTokenTask(SnaphApplication snaph, Context context,OAuthConsumer consumer,OAuthProvider provider) {
+	public OAuthRequestTokenTask(Context context,OAuthConsumer consumer,OAuthProvider provider) {
 		this.context = context;
 		this.consumer = consumer;
 		this.provider = provider;
-		this.snaph = snaph;
 	}
 
 	/**
@@ -55,9 +52,9 @@ public class OAuthRequestTokenTask extends AsyncTask<Void, Void, Void> {
 		
 		try {
 			Log.i(TAG, "Retrieving request token from Google servers");
-			final String url = provider.retrieveRequestToken(consumer, snaph.OAUTH_CALLBACK_URL);
-			Log.i(TAG, "Popping a browser with the authorize URL : " + Uri.parse(url));
-			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+			final String url = provider.retrieveRequestToken(consumer, SnaphApplication.OAUTH_CALLBACK_URL);
+			Log.i(TAG, "Popping a browser with the authorize URL : " + url);
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url)).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_FROM_BACKGROUND);
 			context.startActivity(intent);
 		} catch (Exception e) {
 			Log.e(TAG, "Error during OAUth retrieve request token", e);

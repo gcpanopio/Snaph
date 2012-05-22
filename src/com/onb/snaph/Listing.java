@@ -22,21 +22,23 @@ public class Listing {
 	private String description;
 	private BigDecimal price;
 	private Bitmap image;
-	
+	private String itemUrl;
+	private String imageUrl;
 	//this is the database id from web app. A new Listing in android app has no itemId
 	private int itemId;
 	
-	public Listing(String name, String description, BigDecimal price, Bitmap image, int itemId) {
+	public Listing(String name, String description, BigDecimal price, Bitmap image, int itemId, String itemUrl, String imageUrl) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.image = image;
-		
+		this.imageUrl = imageUrl;
 		this.itemId = itemId;
+		this.setItemUrl(itemUrl);
 	}
 	
 	public Listing(String name, String description, BigDecimal price, Bitmap image) {
-		this(name, description, price, image, -1);
+		this(name, description, price, image, -1, "", "");
 	}
 	
 	public String getName() {
@@ -120,5 +122,21 @@ public class Listing {
 		} else if (!price.equals(other.price))
 			return false;
 		return true;
+	}
+
+	public String getItemUrl() {
+		return itemUrl;
+	}
+
+	public void setItemUrl(String itemUrl) {
+		this.itemUrl = itemUrl;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 }
