@@ -40,6 +40,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+/**
+ * 
+ * 
+ *
+ */
 public class SnaphMainActivity extends Activity {
     
 	protected static final String TAG = SnaphMainActivity.class.getSimpleName();
@@ -144,7 +149,7 @@ public class SnaphMainActivity extends Activity {
      */
     public void onResume(){
     	super.onResume();
-    	init();
+    	setListView();
     }
     
     private void viewListing(int position){
