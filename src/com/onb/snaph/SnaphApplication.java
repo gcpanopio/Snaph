@@ -38,10 +38,12 @@ public class SnaphApplication extends Application{
 	
 	private Facebook facebook;
 	final String APP_ID = "366360670078534";
+	public boolean authenticated;
 	
 	@Override
 	public void onCreate() {
         super.onCreate();
+        authenticated = false;
 	}
 	
 	public void setAdapter(ArrayAdapter<CompressedListing> adapter){

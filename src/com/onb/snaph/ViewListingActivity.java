@@ -6,6 +6,7 @@ import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 
@@ -48,14 +49,13 @@ public class ViewListingActivity extends Activity{
 	private TextView price;
 	private SnaphApplication snaph;
 	private int itemPosition;
-	private final Handler twitterHandler = new Handler();
 	private SharedPreferences prefs;
 	private String listingLink;
 	private String imageLink;
 	private OAuthConsumer consumer; 
 	private OAuthProvider provider;
-	private Handler handler;
-	
+	private Handler handler = new Handler();
+	private boolean authenticated;
 	@Override
     public void onCreate(Bundle savedInstanceState) {
     	
@@ -64,7 +64,7 @@ public class ViewListingActivity extends Activity{
         setContentView(R.layout.view_listing);
         
         snaph = (SnaphApplication) getApplication();
-        
+        authenticated = snaph.authenticated;
         Intent viewForm = this.getIntent();
         itemPosition = viewForm.getIntExtra("item_position", -1);
         
@@ -164,7 +164,7 @@ public class ViewListingActivity extends Activity{
 				final String postId = values.getString("post_id");
 	
 		        if (postId != null) {
-		        	showToast("Wall POst Success");
+		        	showToast("Wall Post Success");
 		        	Log.d(TAG,"Wall Post Success");
 		        } else {
 		        	Log.d(TAG,"Wall Post Failed");
@@ -200,7 +200,6 @@ public class ViewListingActivity extends Activity{
 		twitter.setOAuthAccessToken(a);
 		Log.d(TAG,"Authenticated");
 		
-		boolean authenticated = false;
 		if (authenticated) {
 			sendTweet();
     	} 
@@ -217,6 +216,7 @@ public class ViewListingActivity extends Activity{
 	}
 	
 	private void sendTweet(){
+		snaph.authenticated = true;
 		Thread t = new Thread() {
 	        public void run() {
 	        	try {
@@ -228,10 +228,11 @@ public class ViewListingActivity extends Activity{
 	        		twitter.setOAuthConsumer(SnaphApplication.CONSUMER_KEY, 
 	        				SnaphApplication.CONSUMER_SECRET);
 	        		twitter.setOAuthAccessToken(a);
-	        		String msg = "Check out this link to see the item I'm selling \n" + listingLink;
+	        		String msg = "Hi! I'm selling " + title.getText() +". Check out this link for more details: " + listingLink;
 	                twitter.updateStatus(msg);
-	        		twitterHandler.post(mUpdateTwitterNotification);
+	                showToast("Tweet sent");
 				} catch (Exception ex) {
+					showToast("Unable to Tweet");
 					ex.printStackTrace();
 				}
 	        }
@@ -244,12 +245,6 @@ public class ViewListingActivity extends Activity{
 			e.printStackTrace();
 		}
 	}
-	
-	final Runnable mUpdateTwitterNotification = new Runnable() {
-        public void run() {
-        	Toast.makeText(getBaseContext(), "Tweet sent!", Toast.LENGTH_LONG).show();
-        }
-    };
     
     @Override
 	public void onNewIntent(Intent intent) {
@@ -264,6 +259,7 @@ public class ViewListingActivity extends Activity{
 			setContentView(R.layout.view_listing);
 	        
 	        snaph = (SnaphApplication) getApplication();
+	        authenticated = snaph.authenticated;
 	        
 	        Intent viewForm = this.getIntent();
 	        itemPosition = viewForm.getIntExtra("item_position", -1);
