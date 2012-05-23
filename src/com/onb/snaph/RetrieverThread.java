@@ -28,13 +28,9 @@ import android.widget.Toast;
  *
  */
 public class RetrieverThread extends Thread {
-<<<<<<< HEAD
-
+	
 	private String address = "http://10.10.6.127:8080/Snaph/retrieve";
-=======
 	protected static final String TAG = RetrieverThread.class.getSimpleName();
-	private String address = "http://10.10.5.122:8080/Snaph/retrieve";
->>>>>>> 4b9363facb9fc466e8b0a93365df1ea0e6dfc64e
 	
 	private String fbUserId;
 	private ArrayAdapter<CompressedListing> adapter;

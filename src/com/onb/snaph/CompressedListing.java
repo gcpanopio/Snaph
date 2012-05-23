@@ -1,6 +1,7 @@
 package com.onb.snaph;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -10,8 +11,13 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 
 /**
@@ -131,7 +137,21 @@ public class CompressedListing {
 		};
 		return thread;
 	}
+    
+    public static int getOrientation(Context context, Uri photoUri) {
+            /* it's on the external media. */
+            Cursor cursor = context.getContentResolver().query(photoUri,
+                    new String[]{MediaStore.Images.ImageColumns.ORIENTATION},
+                    null, null, null);
 
+            if (cursor.getCount() != 1) {
+                return -1;
+            }
+
+            cursor.moveToFirst();
+            return cursor.getInt(0);
+    }
+    
 	private InputStream openStream(String imageUri) throws MalformedURLException, IOException {
 		URLConnection connection = new URL(imageUri).openConnection();
 		connection.connect();
