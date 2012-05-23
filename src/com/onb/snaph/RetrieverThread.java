@@ -29,7 +29,7 @@ import android.widget.Toast;
  */
 public class RetrieverThread extends Thread {
 
-	private String address = "http://10.10.5.122:8080/Snaph/retrieve";
+	private String address = "http://10.10.6.127:8080/Snaph/retrieve";
 	
 	private String fbUserId;
 	private ArrayAdapter<CompressedListing> adapter;

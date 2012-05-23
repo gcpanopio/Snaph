@@ -6,7 +6,6 @@ import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 
@@ -16,9 +15,13 @@ import com.facebook.android.FacebookError;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -214,32 +217,7 @@ public class ViewListingActivity extends Activity{
 		Log.d(TAG,authenticated+"");
 		*/
 		if (authenticated) {
-			Thread t = new Thread() {
-		        public void run() {
-		        	try {
-		        		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
-		        		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
-		        		
-		        		AccessToken a = new AccessToken(token,secret);
-		        		Twitter twitter = new TwitterFactory().getInstance();
-		        		twitter.setOAuthConsumer(SnaphApplication.CONSUMER_KEY, 
-		        				SnaphApplication.CONSUMER_SECRET);
-		        		twitter.setOAuthAccessToken(a);
-		        		String msg = "Check out this link to see the item I'm selling \n" + listingLink;
-		                twitter.updateStatus(msg);
-		        		twitterHandler.post(mUpdateTwitterNotification);
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-		        }
-
-		    };
-		    t.start();
-		    try {
-				t.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			sendTweet();
     	} 
 		else {
 			try {
@@ -253,10 +231,139 @@ public class ViewListingActivity extends Activity{
     	}
 	}
 	
+	private void sendTweet(){
+		Thread t = new Thread() {
+	        public void run() {
+	        	try {
+	        		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
+	        		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
+	        		
+	        		AccessToken a = new AccessToken(token,secret);
+	        		Twitter twitter = new TwitterFactory().getInstance();
+	        		twitter.setOAuthConsumer(SnaphApplication.CONSUMER_KEY, 
+	        				SnaphApplication.CONSUMER_SECRET);
+	        		twitter.setOAuthAccessToken(a);
+	        		String msg = "Check out this link to see the item I'm selling \n" + listingLink;
+	                twitter.updateStatus(msg);
+	        		twitterHandler.post(mUpdateTwitterNotification);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+	        }
+
+	    };
+	    t.start();
+	    try {
+			t.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	final Runnable mUpdateTwitterNotification = new Runnable() {
         public void run() {
         	Toast.makeText(getBaseContext(), "Tweet sent!", Toast.LENGTH_LONG).show();
         }
     };
+    
+    @Override
+	public void onNewIntent(Intent intent) {
+		super.onNewIntent(intent); 
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		final Uri uri = intent.getData();
+		if (uri != null && uri.getScheme().equals(SnaphApplication.OAUTH_CALLBACK_SCHEME)) {
+			Log.i(TAG, "Callback received : " + uri);
+			Log.i(TAG, "Retrieving Access Token");
+			new RetrieveAccessTokenTask(this).execute(uri);
+			
+			setContentView(R.layout.view_listing);
+	        
+	        Button edit= (Button) findViewById(R.id.edit_button);
+	        edit.getBackground().setAlpha(70);
+	        
+	        Button delete = (Button) findViewById(R.id.delete_button);
+	        delete.getBackground().setAlpha(70);
+	        
+	        Button back = (Button) findViewById(R.id.back_button);
+	        back.getBackground().setAlpha(70);
+	        
+	        ImageButton facebook = (ImageButton) findViewById(R.id.facebook_button);
+	        facebook.getBackground().setAlpha(70);
+	        
+	        ImageButton twitter = (ImageButton) findViewById(R.id.twitter_button);
+	        twitter.getBackground().setAlpha(70);
+	        
+	        snaph = (SnaphApplication) getApplication();
+	        
+	        Intent viewForm = this.getIntent();
+	        itemPosition = viewForm.getIntExtra("item_position", -1);
+	        
+	        Log.d(TAG, "Item pos: "+itemPosition);
+	        Listing item = snaph.getAdapter().getItem(itemPosition).toListing();
+	      
+	        imageLink = item.getImageUrl();
+	        listingLink = item.getItemUrl();
+	        image = (ImageView) findViewById(R.id.image_view);
+	        image.setImageBitmap(item.getImage());
+	        title = (TextView) findViewById(R.id.title_view);
+	        title.setText(item.getName());
+	        description = (TextView) findViewById(R.id.description_view);
+	        description.setText(item.getDescription());
+	        price = (TextView) findViewById(R.id.price_view);
+	        price.setText(item.getPrice().toString());
+		}
+	}
+    
+    public class RetrieveAccessTokenTask extends AsyncTask<Uri, Void, Void> {
+		
+    	private Context context;
+    	
+    	public RetrieveAccessTokenTask(Context context){
+    		this.context = context;
+    	}
+    	
+    	/**
+		 * Retrieve the oauth_verifier, and store the oauth and oauth_token_secret 
+		 * for future API calls.
+		 */
+		@Override
+		protected Void doInBackground(Uri...params) {
+			final Uri uri = params[0];
+			final String oauth_verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
+
+			try {
+				provider.retrieveAccessToken(consumer, oauth_verifier);
+
+				final Editor edit = prefs.edit();
+				edit.putString(OAuth.OAUTH_TOKEN, consumer.getToken());
+				edit.putString(OAuth.OAUTH_TOKEN_SECRET, consumer.getTokenSecret());
+				edit.commit();
+				
+				String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
+				String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
+				
+				consumer.setTokenWithSecret(token, secret);
+				startActivity(new Intent(context,ViewListingActivity.class));
+
+				executeAfterAccessTokenRetrieval();
+				
+				Log.i(TAG, "OAuth - Access Token Retrieved");
+				
+			} catch (Exception e) {
+				Log.e(TAG, "OAuth - Access Token Retrieval Error", e);
+			}
+
+			return null;
+		}
+
+
+		private void executeAfterAccessTokenRetrieval() {
+			try {
+				sendTweet();
+			} catch (Exception e) {
+				Log.e(TAG, "OAuth - Error sending to Twitter", e);
+			}
+		}
+	}	
 
 }

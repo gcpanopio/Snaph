@@ -34,7 +34,7 @@ import android.widget.Toast;
  */
 public class UploaderThread extends Thread {
 	
-	private String address = "http://10.10.5.122:8080/Snaph/upload";
+	private String address = "http://10.10.6.127:8080/Snaph/upload";
 	
 	private Context context;
 	private Listing listing;
