@@ -27,7 +27,8 @@
             
             <TableLayout android:id="@+id/TableLayout01"
 				 android:layout_width="fill_parent"
-				 android:layout_height="wrap_content">
+				 android:layout_height="wrap_content"
+				 android:padding="10dp">
 		    
 		     <TextView
 		         android:layout_width="fill_parent"
@@ -35,19 +36,16 @@
 		         android:text="@string/form_title"
 		         android:textSize="15dp"
 		         android:textStyle="bold"
-		         android:layout_marginLeft="3dp"
-				 android:layout_marginBottom="3dp"
-				 android:layout_marginRight="3dp"
-				 android:layout_marginTop="3dp"/>
+		         android:layout_margin="3dp"
+		         android:padding="3dp"
+        		 android:background="@drawable/rectangle"
+        		 android:textColor="@color/white"/>
 		     
 		     <TextView
 		        android:id="@+id/title_view"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginLeft="3dp"
-				 android:layout_marginBottom="3dp"
-				 android:layout_marginRight="3dp"
-				 android:layout_marginTop="3dp"/>
+		        android:layout_margin="3dp"/>
 		     
 		     <TextView
 		        android:layout_width="fill_parent"
@@ -55,19 +53,16 @@
 		        android:text="@string/form_price" 
 		        android:textSize="15dp" 
         		android:textStyle="bold"
-        		android:layout_marginLeft="3dp"
-				 android:layout_marginBottom="3dp"
-				 android:layout_marginRight="3dp"
-				 android:layout_marginTop="3dp"/>
+        		android:layout_margin="3dp"
+        		android:padding="3dp"
+        		android:background="@drawable/rectangle"
+        		android:textColor="@color/white"/>
 		     
 		     <TextView 
 		        android:id="@+id/price_view"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginLeft="3dp"
-				 android:layout_marginBottom="3dp"
-				 android:layout_marginRight="3dp"
-				 android:layout_marginTop="3dp"/>
+		        android:layout_margin="3dp"/>
 		     
 		     <TextView
 		        android:layout_width="fill_parent"
@@ -75,19 +70,16 @@
 		        android:text="@string/form_description"
 		        android:textSize="15dp" 
         		android:textStyle="bold" 
-        		android:layout_marginLeft="3dp"
-				 android:layout_marginBottom="3dp"
-				 android:layout_marginRight="3dp"
-				 android:layout_marginTop="3dp"/>
+        		android:layout_margin="3dp"
+        		android:padding="3dp"
+        		android:background="@drawable/rectangle"
+        		android:textColor="@color/white"/>
 		     
 		     <TextView 
 		        android:id="@+id/description_view"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginLeft="3dp"
-				 android:layout_marginBottom="3dp"
-				 android:layout_marginRight="3dp"
-				 android:layout_marginTop="3dp"/>
+		        android:layout_margin="3dp"/>
 
            </TableLayout>
         </LinearLayout>
