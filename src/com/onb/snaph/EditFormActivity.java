@@ -12,9 +12,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 /**
+ * Represents the edit form and edit function of the application.
  * 
+ * Given a selected listing, the user can edit the listing's basic information (name, price and description).
+ * The user can then send the edited version to the web application for update.
  * 
- *
  */
 public class EditFormActivity extends Activity{
 	protected static final String TAG = EditFormActivity.class.getSimpleName();
@@ -48,8 +50,7 @@ public class EditFormActivity extends Activity{
         itemPosition = viewForm.getIntExtra("item_position", -1);
         Log.d(TAG, "Item pos: "+itemPosition);
         item = snaph.getAdapter().getItem(itemPosition).toListing();
-      
-	    
+
 	    image = (ImageView) findViewById(R.id.image_edit);
         image.setImageBitmap(item.getImage());
         title = (EditText) findViewById(R.id.title_edit);
@@ -61,7 +62,7 @@ public class EditFormActivity extends Activity{
 	}
 	
 	/**
-	 * 
+	 * Finishes the EditFormActivity 
 	 * @param view
 	 */
 	public void onCancel(View view){
@@ -69,16 +70,18 @@ public class EditFormActivity extends Activity{
 	}
 	
 	/**
+	 * Sends the updated version of the selected listing to the web application.
 	 * 
 	 * @param view
 	 */
 	public void onUpdate(View view){
-		Log.d(TAG, "Price: "+price.getText());
 		Listing list = new Listing(title.getText().toString(), description.getText().toString(), new BigDecimal(price.getText().toString()), item.getImage());
-		list.setItemId(snaph.getAdapter().getItem(itemPosition).getItemId());
+		list.setItemId(snaph.getItemIdAtPosition(itemPosition));
 		Log.d(TAG, list.toString());
+		
 		UserAccount fbUser = new UserAccount(snaph.getFbToken(), snaph.getFbUserId(), true);
 		SellerInfo seller = new SellerInfo(fbUser, null, AndroidUserCommand.EDIT);
+		
 		Thread thread = new UploaderThread(this.getBaseContext(), list, seller);
 		thread.start();
 		try {

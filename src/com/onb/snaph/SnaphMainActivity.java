@@ -41,9 +41,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
+ * The application's main activity. 
  * 
+ * Contains the Facebook log-in. Shows the list of items of the current logged in user.
  * 
- *
  */
 public class SnaphMainActivity extends Activity {
     
@@ -243,6 +244,7 @@ public class SnaphMainActivity extends Activity {
     }
     
     /**
+     * Logs out the current user
      * 
      * @param view
      */
@@ -275,7 +277,7 @@ public class SnaphMainActivity extends Activity {
     }
     
     /**
-     * 
+     * Shows a menu where the user can choose how he wants to upload the picture of the item.
      * @param view
      */
     public void onSnapButtonActivity(View view){    	

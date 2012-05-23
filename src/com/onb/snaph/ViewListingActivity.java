@@ -6,7 +6,6 @@ import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 
@@ -32,7 +31,9 @@ import android.widget.Toast;
 
 /**
  * 
+ * Shows the details (image, name, price and description) of the selected listing on the item list.
  * 
+ * Has buttons for edit and delete.
  *
  */
 public class ViewListingActivity extends Activity{
@@ -95,7 +96,9 @@ public class ViewListingActivity extends Activity{
     }
 	
 	/**
+	 * Deletes the selected listing.
 	 * 
+	 * Sends DELETE command to the web application with the selected listing's item ID.
 	 * @param view
 	 */
 	public void onDelete(View view){
@@ -135,6 +138,7 @@ public class ViewListingActivity extends Activity{
 	}
 	
 	/**
+     * Calls the EditFormActivity
      * 
      * @param view
      */
@@ -148,7 +152,7 @@ public class ViewListingActivity extends Activity{
 	}
 	
 	/**
-	 * 
+	 * Finishes the ViewListingAcitvity
 	 * @param view
 	 */
 	public void onBack(View view){

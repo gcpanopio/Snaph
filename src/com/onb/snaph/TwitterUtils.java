@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 
 /**
  * 
- * @author girah
  *
  */
 public class TwitterUtils {

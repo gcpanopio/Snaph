@@ -15,17 +15,15 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 /**
- * CompressedListing represents an item fetched from the web app.
+ * CompressedListing represents an item fetched from the web application.
  * 
- * It is expected that several items will be retrieved by the mobile app from the web app.
+ * It is expected that several items will be retrieved by the mobile application from the web application.
  * That is why it is important to have another domain to hold lightweight version of Listing domain.
  * 
  * Lightweight version means, unlike Listing, CompressedListing substitutes URI rather than Bitmap for images.
  * 
  * The fields of CompressedListing are also immutable. To modify, there is a method toListing() which
- * converts the fields into a mutable instance of Listing (yep, URI is transformed into Bitmap!)
- * 
- * @author ken
+ * converts the fields into a mutable instance of Listing (where the URI is transformed into Bitmap)
  *
  */
 public class CompressedListing {
@@ -79,9 +77,12 @@ public class CompressedListing {
 	}
 	
 	/**
+	 * Converts the CompressedListing to an instance of Listing
+	 * 
 	 * This function takes time to complete because image will be fetched from web.
 	 * A Toast or Loading dialog is encouraged when this function is called.
-	 * @return
+	 * 
+	 * @return	the listing instance of the CompressedListing
 	 */
 	public Listing toListing () {
 		BigDecimal price = new BigDecimal(this.getPrice());
@@ -93,11 +94,7 @@ public class CompressedListing {
 		return result;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public Bitmap getImageBitmap() {
+	private Bitmap getImageBitmap() {
 		Bitmap result = null;
 		ArrayList<Bitmap> list = new ArrayList<Bitmap>(1);
 		Thread thread = bitmapListThread(list);

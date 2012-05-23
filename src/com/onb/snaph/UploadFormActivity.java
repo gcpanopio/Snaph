@@ -11,8 +11,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 /**
+ * Represents the upload form and create function of the application.
  * 
- * @author girah
+ * Asks for the item's information (name, price and description) and sends the data to the web application
  *
  */
 public class UploadFormActivity extends Activity{
@@ -47,7 +48,7 @@ public class UploadFormActivity extends Activity{
     }
     
     /**
-     * 
+     * Finishes the UploadFormActivity
      * @param view
      */
     public void onCancel(View view){
@@ -55,7 +56,9 @@ public class UploadFormActivity extends Activity{
     }
     
     /**
+     * Creates a new instance of listing with a default itemId -1. 
      * 
+     * Calls the UploaderTHread to upload the data.
      * @param view
      */
     public void onUpload(View view){
@@ -68,7 +71,6 @@ public class UploadFormActivity extends Activity{
     	try {
 			thread.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	

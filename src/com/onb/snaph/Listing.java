@@ -12,8 +12,6 @@ import android.graphics.Bitmap;
  * It shall only be used to hold the values of the active item (i.e, the one being created, modified, or deleted)
  * 
  * The fields of Listing are the ones being sent to the web appl.
- * 
- * @author ken
  *
  */
 
@@ -47,6 +45,7 @@ public class Listing {
 	}
 	
 	/**
+	 * Constructor for new instances of listing used in CREATE. The itemId is set to -1 by default.
 	 * 
 	 * @param name
 	 * @param description
