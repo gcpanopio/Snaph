@@ -71,7 +71,7 @@ public class ViewListingActivity extends Activity{
         Log.d(TAG, "Item pos: "+itemPosition);
         Listing item = snaph.getListingAtPosition(itemPosition);
       
-        imageLink = item.getImageUrl();
+        imageLink = "http://i165.photobucket.com/albums/u43/astralgamer09/Snaph2.png";
         listingLink = item.getItemUrl();
         image = (ImageView) findViewById(R.id.image_view);
         image.setImageBitmap(item.getImage());
