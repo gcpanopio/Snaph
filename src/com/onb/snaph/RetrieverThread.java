@@ -24,12 +24,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 /**
- *
+ * Responsible for retrieving data from the web application
  *
  */
 public class RetrieverThread extends Thread {
+<<<<<<< HEAD
 
 	private String address = "http://10.10.6.127:8080/Snaph/retrieve";
+=======
+	protected static final String TAG = RetrieverThread.class.getSimpleName();
+	private String address = "http://10.10.5.122:8080/Snaph/retrieve";
+>>>>>>> 4b9363facb9fc466e8b0a93365df1ea0e6dfc64e
 	
 	private String fbUserId;
 	private ArrayAdapter<CompressedListing> adapter;
@@ -61,13 +66,15 @@ public class RetrieverThread extends Thread {
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
-			showToast("Bad web data");
+			Log.d(TAG, "Bad web Data");
+			//showToast("Bad web data");
 		} catch (IOException e) {
-			showToast("Failed to connect");
+			//showToast("Failed to connect");
+			Log.d(TAG, "Failed to connect");
 			e.printStackTrace();
 		} catch (Exception e) {
-			showToast("Error occured");
-			Log.d("other exceptions", e.getMessage());
+			//showToast("Error occured");
+			Log.d("Other exceptions", e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -108,6 +115,7 @@ public class RetrieverThread extends Thread {
 		
 		return entity;
 	}
+	
 	private void parseListAndInsertToAdapter(JSONArray jsonArray) throws JSONException {
 		
 		adapter.clear();

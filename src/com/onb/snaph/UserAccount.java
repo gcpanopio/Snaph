@@ -1,8 +1,7 @@
 package com.onb.snaph;
 
 /**
- * 
- * 
+ * Contains the user's information (accessToken, userId) on a given account (e.g. Facebook)
  *
  */
 public class UserAccount {

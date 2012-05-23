@@ -33,8 +33,13 @@ import android.widget.Toast;
  *
  */
 public class UploaderThread extends Thread {
+<<<<<<< HEAD
 	
 	private String address = "http://10.10.6.127:8080/Snaph/upload";
+=======
+	protected static final String TAG = UploaderThread.class.getSimpleName();
+	private String address = "http://10.10.5.122:8080/Snaph/upload";
+>>>>>>> 4b9363facb9fc466e8b0a93365df1ea0e6dfc64e
 	
 	private Context context;
 	private Listing listing;
@@ -57,10 +62,10 @@ public class UploaderThread extends Thread {
 			String message = decodeResponse(response);
 			showToast(message);
 		} catch (HttpHostConnectException e) {
-			showToast("Failed to connect");
+			//showToast("Failed to connect");
 			Log.d("DataSenderThread Connection Exception", e.getMessage());
 		} catch (IOException e) {
-			showToast("Failed to send data");
+			//showToast("Failed to send data");
 			Log.d("DataSenderThread exception", e.getMessage());
 			e.printStackTrace();
 		}		
@@ -105,7 +110,6 @@ public class UploaderThread extends Thread {
 		entity.addPart("itemId", new StringBody(listing.getItemIdAsString()));
 		entity.addPart("command", new StringBody(sellerInfo.getCommandAsString()));
 
-		// reduce the information to be sent by not sending anything else
 		if (sellerInfo.getCommand() != AndroidUserCommand.DELETE){
 			addListingToEntity(entity);
 			addAccountToEntity(entity, sellerInfo.getFacebook(), "facebook");
@@ -114,14 +118,6 @@ public class UploaderThread extends Thread {
 			entity.addPart("facebookUserId", new StringBody(sellerInfo.getFacebook().getUserId()));
 		}
 		
-		/*
-		//to be deleted
-		try {
-			Log.d("entities before sending", entity.toString());
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		*/
 		return entity;
 	}
 	

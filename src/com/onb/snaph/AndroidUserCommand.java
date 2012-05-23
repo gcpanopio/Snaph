@@ -2,9 +2,7 @@ package com.onb.snaph;
 
 /**
  * This enum limits the requests of the mobile user to the web application, narrowing his/her
- * chances of issuing invalid requests.
- * 
- * @author ken
+ * chances of issuing invalid requests. Contains three commands: INSERT, EDIT and DELETE
  *
  */
 

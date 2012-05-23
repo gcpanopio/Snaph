@@ -2,15 +2,16 @@ package com.onb.snaph;
 
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
-import twitter4j.Twitter;
 
-import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 import android.app.Application;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.widget.ArrayAdapter;
 
+/**
+ * 
+ *
+ */
 public class SnaphApplication extends Application{
 
 	private Bitmap image;
@@ -35,9 +36,6 @@ public class SnaphApplication extends Application{
 	OAuthConsumer consumer; 
     OAuthProvider provider;
 	
-	private SharedPreferences sharedPrefs;
-	private AsyncFacebookRunner asyncRunner;
-	private Twitter twitter;
 	private Facebook facebook;
 	final String APP_ID = "366360670078534";
 	
@@ -63,10 +61,6 @@ public class SnaphApplication extends Application{
 	
 	public Bitmap getImage(){
 		return this.image;
-	}
-	
-	public int getItemIdAtPosition(int position){
-		return adapter.getItem(position).getItemId();
 	}
 
 	public String getFbToken() {
@@ -109,4 +103,7 @@ public class SnaphApplication extends Application{
 		this.fbUserImage = fbUserImage;
 	}
 	
+	public int getItemIdAtPosition(int position){
+		return adapter.getItem(position).getItemId();
+	}
 }
