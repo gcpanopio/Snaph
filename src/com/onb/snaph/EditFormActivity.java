@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -37,19 +36,13 @@ public class EditFormActivity extends Activity{
 		
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.edit_form);
-	    
-	    Button update = (Button) findViewById(R.id.update_item);
-	    update.getBackground().setAlpha(70);
-	  
-	    Button cancel = (Button) findViewById(R.id.cancel_update);
-	    cancel.getBackground().setAlpha(70);
-	    
+	    	    
 	    snaph = (SnaphApplication) getApplication();
         
         Intent viewForm = this.getIntent();
         itemPosition = viewForm.getIntExtra("item_position", -1);
         Log.d(TAG, "Item pos: "+itemPosition);
-        item = snaph.getAdapter().getItem(itemPosition).toListing();
+        item = snaph.getListingAtPosition(itemPosition);
 
 	    image = (ImageView) findViewById(R.id.image_edit);
         image.setImageBitmap(item.getImage());

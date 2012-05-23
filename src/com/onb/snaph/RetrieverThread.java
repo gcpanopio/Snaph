@@ -28,9 +28,9 @@ import android.widget.Toast;
  *
  */
 public class RetrieverThread extends Thread {
-	
-	private String address = "http://10.10.6.127:8080/Snaph/retrieve";
+
 	protected static final String TAG = RetrieverThread.class.getSimpleName();
+	private String address = "http://10.10.6.127:8080/Snaph/retrieve";
 	
 	private String fbUserId;
 	private ArrayAdapter<CompressedListing> adapter;
@@ -115,8 +115,7 @@ public class RetrieverThread extends Thread {
 	private void parseListAndInsertToAdapter(JSONArray jsonArray) throws JSONException {
 		
 		adapter.clear();
-		
-		//lets declare variables outside the loop so we can reuse them every iteration
+	
 		JSONObject item;
 		CompressedListing listing;
 		

@@ -106,4 +106,8 @@ public class SnaphApplication extends Application{
 	public int getItemIdAtPosition(int position){
 		return adapter.getItem(position).getItemId();
 	}
+	
+	public Listing getListingAtPosition(int position){
+		return adapter.getItem(position).toListing();
+	}
 }
