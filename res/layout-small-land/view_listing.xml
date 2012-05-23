@@ -23,7 +23,8 @@
                 android:contentDescription="@string/text_content_description"
                 android:cropToPadding="true"
                 android:paddingBottom="10dp"
-                android:paddingTop="0dp" />
+                android:paddingTop="0dp" 
+                 android:adjustViewBounds="true"/>
             
            <TableLayout android:id="@+id/TableLayout01"
 				 android:layout_width="fill_parent"

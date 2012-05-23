@@ -24,7 +24,8 @@
 		        android:layout_weight="2.28"
 		        android:contentDescription="@string/text_content_description"
 		        android:paddingBottom="10dp"
-		        android:paddingTop="10dp"/>
+		        android:paddingTop="10dp"
+		         android:adjustViewBounds="true"/>
 		     
 		    <TableLayout android:id="@+id/TableLayout01"
 				 android:layout_width="fill_parent"
