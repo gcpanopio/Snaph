@@ -34,7 +34,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -103,10 +102,6 @@ public class SnaphMainActivity extends Activity {
     	asyncRunner.request("me", params, new userRequestListener());
     	
     	Log.d(TAG, "[2] Initialize");
-    	Button snapPhoto = (Button) findViewById(R.id.snap_photo);
-    	snapPhoto.getBackground().setAlpha(70);
-    	Button logout = (Button) findViewById(R.id.logout_button);
-    	logout.getBackground().setAlpha(70);
     
     	setListView();
     }

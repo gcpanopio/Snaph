@@ -27,8 +27,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +54,7 @@ public class ViewListingActivity extends Activity{
 	private String imageLink;
 	private OAuthConsumer consumer; 
 	private OAuthProvider provider;
+	private Handler handler;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,28 +63,13 @@ public class ViewListingActivity extends Activity{
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.view_listing);
         
-        Button edit= (Button) findViewById(R.id.edit_button);
-        edit.getBackground().setAlpha(70);
-        
-        Button delete = (Button) findViewById(R.id.delete_button);
-        delete.getBackground().setAlpha(70);
-        
-        Button back = (Button) findViewById(R.id.back_button);
-        back.getBackground().setAlpha(70);
-        
-        ImageButton facebook = (ImageButton) findViewById(R.id.facebook_button);
-        facebook.getBackground().setAlpha(70);
-        
-        ImageButton twitter = (ImageButton) findViewById(R.id.twitter_button);
-        twitter.getBackground().setAlpha(70);
-        
         snaph = (SnaphApplication) getApplication();
         
         Intent viewForm = this.getIntent();
         itemPosition = viewForm.getIntExtra("item_position", -1);
         
         Log.d(TAG, "Item pos: "+itemPosition);
-        Listing item = snaph.getAdapter().getItem(itemPosition).toListing();
+        Listing item = snaph.getListingAtPosition(itemPosition);
       
         imageLink = item.getImageUrl();
         listingLink = item.getItemUrl();
@@ -180,6 +164,7 @@ public class ViewListingActivity extends Activity{
 				final String postId = values.getString("post_id");
 	
 		        if (postId != null) {
+		        	showToast("Wall POst Success");
 		        	Log.d(TAG,"Wall Post Success");
 		        } else {
 		        	Log.d(TAG,"Wall Post Failed");
@@ -214,14 +199,8 @@ public class ViewListingActivity extends Activity{
 		twitter.setOAuthConsumer(SnaphApplication.CONSUMER_KEY, SnaphApplication.CONSUMER_SECRET);
 		twitter.setOAuthAccessToken(a);
 		Log.d(TAG,"Authenticated");
+		
 		boolean authenticated = false;
-		/*
-		try {
-			twitter.getAccountSettings();
-			authenticated = true;
-		} catch (TwitterException e) {}
-		Log.d(TAG,authenticated+"");
-		*/
 		if (authenticated) {
 			sendTweet();
     	} 
@@ -284,21 +263,6 @@ public class ViewListingActivity extends Activity{
 			
 			setContentView(R.layout.view_listing);
 	        
-	        Button edit= (Button) findViewById(R.id.edit_button);
-	        edit.getBackground().setAlpha(70);
-	        
-	        Button delete = (Button) findViewById(R.id.delete_button);
-	        delete.getBackground().setAlpha(70);
-	        
-	        Button back = (Button) findViewById(R.id.back_button);
-	        back.getBackground().setAlpha(70);
-	        
-	        ImageButton facebook = (ImageButton) findViewById(R.id.facebook_button);
-	        facebook.getBackground().setAlpha(70);
-	        
-	        ImageButton twitter = (ImageButton) findViewById(R.id.twitter_button);
-	        twitter.getBackground().setAlpha(70);
-	        
 	        snaph = (SnaphApplication) getApplication();
 	        
 	        Intent viewForm = this.getIntent();
@@ -320,6 +284,10 @@ public class ViewListingActivity extends Activity{
 		}
 	}
     
+    /**
+     * 
+     *
+     */
     public class RetrieveAccessTokenTask extends AsyncTask<Uri, Void, Void> {
 		
     	private Context context;
@@ -371,5 +339,15 @@ public class ViewListingActivity extends Activity{
 			}
 		}
 	}	
+    
+    private void showToast(final String message) {
+		Runnable toast = new Runnable() {
+			
+			public void run() {
+				Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
+			}		
+		};
+		handler.post(toast);
+	}
 
 }

@@ -33,14 +33,9 @@ import android.widget.Toast;
  *
  */
 public class UploaderThread extends Thread {
-<<<<<<< HEAD
-	
-	private String address = "http://10.10.6.127:8080/Snaph/upload";
-=======
 	protected static final String TAG = UploaderThread.class.getSimpleName();
-	private String address = "http://10.10.5.122:8080/Snaph/upload";
->>>>>>> 4b9363facb9fc466e8b0a93365df1ea0e6dfc64e
-	
+	private String address = "http://10.10.6.127:8080/Snaph/upload";
+
 	private Context context;
 	private Listing listing;
 	private SellerInfo sellerInfo;
@@ -57,7 +52,7 @@ public class UploaderThread extends Thread {
 	@Override
 	public void run () {	
 		try {
-			showToast("Sending data");
+			//showToast("Sending data");
 			HttpResponse response = sendToNetwork();
 			String message = decodeResponse(response);
 			showToast(message);
