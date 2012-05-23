@@ -84,15 +84,15 @@
 
           <ImageButton
               android:id="@+id/facebook_button"
-              android:layout_width="50dp"
-              android:layout_height="50dp"
+              android:layout_width="40dp"
+              android:layout_height="40dp"
               android:onClick="onFacebookPost"
               android:src="@drawable/facebook_icon" />
 
           <ImageButton
               android:id="@+id/twitter_button"
-              android:layout_width="50dp"
-              android:layout_height="50dp"
+              android:layout_width="40dp"
+              android:layout_height="40dp"
               android:onClick="onTwitterPost"
               android:src="@drawable/twitter_icon" />
 

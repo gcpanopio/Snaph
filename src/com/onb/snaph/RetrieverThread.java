@@ -49,7 +49,7 @@ public class RetrieverThread extends Thread {
 	@Override
 	public void run() {
 
-		showToast("Retrieving your items");
+		//showToast("Retrieving your items");
 		JSONArray jsonArray;
 		try {
 			jsonArray = getListFromWebApp();			
@@ -57,7 +57,7 @@ public class RetrieverThread extends Thread {
 			if (adapter.isEmpty()) {
 				showToast("No items found");
 			} else {
-				showToast(adapter.getCount()+" item(s) retrieved");	
+				//showToast(adapter.getCount()+" item(s) retrieved");	
 			}
 			
 		} catch (JSONException e) {
