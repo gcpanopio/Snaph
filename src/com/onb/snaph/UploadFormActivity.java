@@ -56,6 +56,9 @@ public class UploadFormActivity extends Activity{
      * @param view
      */
     public void onUpload(View view){
+    	if(price.getText().toString().equals("")){
+    		price.setText("0.00");
+    	}
     	Listing list = new Listing(title.getText().toString(), description.getText().toString(), new BigDecimal(price.getText().toString()), snaph.getImage());
     	UserAccount fbUser = new UserAccount(snaph.getFbToken(), snaph.getFbUserId(), true);
     	SellerInfo seller = new SellerInfo(fbUser, null, AndroidUserCommand.INSERT);
