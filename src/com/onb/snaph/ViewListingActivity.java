@@ -269,7 +269,7 @@ public class ViewListingActivity extends Activity{
     @Override
 	public void onNewIntent(Intent intent) {
 		super.onNewIntent(intent); 
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		final Uri uri = intent.getData();
 		if (uri != null && uri.getScheme().equals(SnaphApplication.OAUTH_CALLBACK_SCHEME)) {
 			Log.i(TAG, "Callback received : " + uri);
