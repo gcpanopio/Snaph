@@ -165,6 +165,7 @@ public class ViewListingActivity extends Activity{
 		Bundle params = new Bundle();
 		params.putString("link", listingLink);
 		params.putString("picture", imageLink);
+		Log.d(TAG,imageLink);
 		params.putString("name", title.getText().toString());
 		params.putString("description", description.getText().toString());
 		params.putString("caption", price.getText().toString());
